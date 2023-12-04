@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FoodAdminClient", "..\FoodA
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "BlogFoodClientUser", "..\BlogFoodClientUser\BlogFoodClientUser.phpproj", "{D9869CF2-69F4-4DEC-8DB5-F653934436C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "..\Data\Data.csproj", "{87BD307B-3C69-4A49-8028-882072701FE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D9869CF2-69F4-4DEC-8DB5-F653934436C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9869CF2-69F4-4DEC-8DB5-F653934436C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9869CF2-69F4-4DEC-8DB5-F653934436C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87BD307B-3C69-4A49-8028-882072701FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87BD307B-3C69-4A49-8028-882072701FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87BD307B-3C69-4A49-8028-882072701FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87BD307B-3C69-4A49-8028-882072701FE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
