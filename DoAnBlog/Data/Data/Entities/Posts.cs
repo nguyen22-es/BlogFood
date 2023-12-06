@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
+﻿
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +15,7 @@ namespace DataAccess.Data.Entities
 
         public string Title { get; set; } = null!;
 
-        public string RecipesId { get; set; } = null!;
+        public string Content { get; set; } = null!;
 
         public DateTime DatePosted { get; set; } 
 
@@ -23,8 +23,8 @@ namespace DataAccess.Data.Entities
 
         public virtual ICollection<PostCategory> PostCategories { get; set; } = new List<PostCategory>();
 
-        public virtual ManageUser? User { get; set; }
+        public  ManageUser? User { get; set; }
 
-        public virtual Recipes Recipes { get; set; }
+       
     }
 }

@@ -1,4 +1,4 @@
-﻿using DataAccess.Entities;
+﻿using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -9,35 +9,34 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Configurations
 {
-    public class PostCategoryConfiguration : IEntityTypeConfiguration<Posts>
+    public class PostCategoryConfiguration : IEntityTypeConfiguration<PostCategory>
     {
-        public void Configure(EntityTypeBuilder<Posts> builder)
+        public void Configure(EntityTypeBuilder<PostCategory> builder)
         {
-            builder.ToTable("Posts"); // Đặt tên bảng là "Posts"
-            builder.HasKey(p => p.PostID); // Xác định trường "PostID" là khóa chính
+            builder.ToTable("PostCategories"); 
 
-            builder.Property(p => p.PostID)
-                .IsRequired();
+            builder.HasKey(e => e.LinkId); 
 
-            builder.Property(p => p.UserID)
-                .IsRequired();
+            builder.Property(e => e.LinkId)
+                .IsRequired(); 
+           
 
-            builder.Property(p => p.Content)
-                .IsRequired();
+            builder.Property(e => e.PostId)
+                .IsRequired(false); 
 
-            builder.Property(p => p.TimePost)
-                .IsRequired();
+            builder.Property(e => e.CategoryId)
+                .IsRequired(false); 
 
-            // Cấu hình liên kết đến người dùng (FromUser)
-            builder.HasOne(p => p.FromUser)
-                .WithMany(u => u.Posts) // Tập hợp Posts trong ManagerUser
-                .HasForeignKey(p => p.UserID)
-            .OnDelete(DeleteBehavior.Restrict);
-            // Cấu hình liên kết đến các comment (Comments)
-            builder.HasMany(p => p.Comments)
-                .WithOne(c => c.Post)
-                .HasForeignKey(c => c.PostID)
-            .OnDelete(DeleteBehavior.Restrict);
+           
+            builder.HasOne(e => e.Post)
+                .WithMany()
+                .HasForeignKey(e => e.PostId)
+                .IsRequired(false);
+
+            builder.HasOne(e => e.Category)
+                .WithMany()
+                .HasForeignKey(e => e.CategoryId)
+                .IsRequired(false);
         }
     }
 }

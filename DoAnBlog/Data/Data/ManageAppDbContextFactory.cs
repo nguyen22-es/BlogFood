@@ -20,7 +20,6 @@ namespace DataAccess
             IConfigurationRoot configuration = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json")
-               .AddJsonFile($"appsettings.{environmentName}.json")
                .Build();
 
 

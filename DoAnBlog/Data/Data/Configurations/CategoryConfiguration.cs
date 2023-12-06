@@ -1,4 +1,5 @@
-﻿using DataAccess.Entities;
+﻿
+using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -13,31 +14,24 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            builder.ToTable("Comments"); // Đặt tên bảng là "Comments"
-            builder.HasKey(c => c.CommentID); // Xác định trường "CommentID" là khóa chính
+            builder.ToTable("Categories"); 
+            builder.HasKey(c => c.CategoryId); 
 
-            builder.Property(c => c.CommentID)
+            builder.Property(c => c.CategoryId)
                 .IsRequired();
 
-            builder.Property(c => c.PostID)
-                .IsRequired();
-
-            builder.Property(c => c.Content)
+            builder.Property(c => c.FoodType)
                 .IsRequired()
-                .HasMaxLength(500); // Độ dài tối đa cho nội dung
+                .HasMaxLength(150);
 
-            builder.Property(c => c.TimeComment)
-                .IsRequired();
+
 
             // Cấu hình liên kết đến bài viết (Post)
-            builder.HasOne(c => c.Post)
-                .WithMany(p => p.Comments)
-                .HasForeignKey(c => c.PostID);
+            builder.HasMany(c => c.PostCategories) 
+                .WithOne() 
+                .HasForeignKey(pc => pc.CategoryId);
 
-            // Cấu hình liên kết đến người dùng (ManagerUser)
-            builder.HasOne(c => c.UserComment)
-                .WithMany()
-                .HasForeignKey(c => c.UserID);
+
         }
     }
 }

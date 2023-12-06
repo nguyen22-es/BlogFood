@@ -1,5 +1,6 @@
 ﻿
-using DataAccess.Entities;
+
+using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,32 +15,28 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Follow> builder)
         {
-            builder.ToTable("Friendships"); // Đặt tên bảng là "Friendships"
-            builder.HasKey(f => f.FriendshipID); // Xác định trường "FriendshipID" là khóa chính
+            builder.ToTable("Fllows"); 
+            builder.HasKey(f => f.FollowerId); 
 
-            builder.Property(f => f.FriendshipID)
+            builder.Property(f => f.FollowerId)
                 .IsRequired();
 
-            builder.Property(f => f.UserID1)
+
+            builder.Property(f => f.FollowerId)
                 .IsRequired();
+                
 
-            builder.Property(f => f.UserID2)
-                .IsRequired();
 
-            builder.Property(f => f.Status)
-                .IsRequired();
+            builder.HasOne(f => f.Follower)
+           .WithMany()
+           .HasForeignKey(f => f.FollowerId)
+           .OnDelete(DeleteBehavior.NoAction);
 
-            // Cấu hình liên kết đến người dùng User1 (ManagerUser)
-        builder.HasOne(f => f.User1)
-       .WithMany()
-       .HasForeignKey(f => f.UserID1)
-       .OnDelete(DeleteBehavior.Restrict); // Cấu hình xóa dữ liệu liên quan khi xóa Friendship
-
-            // Cấu hình liên kết đến người dùng User2 (ManagerUser)
-       builder.HasOne(f => f.User2)
-      .WithMany()
-      .HasForeignKey(f => f.UserID2)
-      .OnDelete(DeleteBehavior.Restrict);
+           
+               builder.HasOne(f => f.Following)
+              .WithMany()
+              .HasForeignKey(f => f.FollowingId)
+              .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

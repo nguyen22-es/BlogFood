@@ -1,4 +1,5 @@
-﻿using DataAccess.Entities;
+﻿
+using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -13,26 +14,18 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<LikePost> builder)
         {
-            builder.ToTable("Messages"); // Đặt tên bảng là "Messages"
-            builder.HasKey(m => m.MessageID);
+            builder.ToTable("LikePosts");
+            builder.HasKey(lp => new { lp.PostId, lp.UserId });
 
-            builder.Property(m => m.MessageID)
-                .ValueGeneratedOnAdd();
+            // Các cấu hình khác...
 
-            builder.Property(m => m.TimeSend)
-                .IsRequired();
+            builder.HasOne(lp => lp.Post)
+                .WithMany()
+                .HasForeignKey(lp => lp.PostId);
 
-            builder.HasOne(m => m.FromUser)
-                .WithMany(u => u.Messages)
-                .HasForeignKey(m => m.SenderUserID)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(m => m.privateChatRoom)
-                .WithMany(c => c.Messages)
-                .HasForeignKey(m => m.RoomID)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(lp => lp.User)
+                .WithMany()
+                .HasForeignKey(lp => lp.UserId);
 
         }
     }

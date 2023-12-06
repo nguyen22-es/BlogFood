@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Data.Data.Entities;
 
 namespace DataAccess
 {
@@ -37,6 +38,7 @@ namespace DataAccess
         public DbSet<Post>  Posts { get; set; }
         public DbSet<Category>  categories { get; set; }
         public DbSet<PostCategory>  postCategories { get; set;}
+        public DbSet<Comment>  comments { get; set; }
 
 
 
