@@ -4,7 +4,6 @@ using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MyWebApiApp.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -28,7 +27,7 @@ namespace BlogFoodApi.Service
 
    
 
-        public async Task<ApiResponse> CheckTokenAsync(RefreshModel refreshModel, ManageUser user)
+        public async Task<ApiResponse> CheckTokenAsync(RefreshModel refreshModel)
         {
             var secret = _configuration["JWT:Secret"] ?? throw new InvalidOperationException("Secret not configured");
             // check accesstoken có hợp lệ hay không
@@ -42,6 +41,8 @@ namespace BlogFoodApi.Service
             try
             {
                 var tokenInVerification = new JwtSecurityTokenHandler().ValidateToken(refreshModel.AccessToken, validation, out var validatedToken);
+                var ID = tokenInVerification.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+
                 // check phần header trong jwt xem thuật toán có đúng không
                 if (validatedToken is JwtSecurityToken jwtSecurityToken)
                 {
@@ -56,7 +57,7 @@ namespace BlogFoodApi.Service
                     }
                 }
                 // check refreshtoken xem có trong csdl không          
-                var storedToken = await manageAppDbContext.UserTokens.FirstOrDefaultAsync(u => u.UserId == user.Id);
+                var storedToken = await manageAppDbContext.UserTokens.FirstOrDefaultAsync(u => u.UserId == ID);
                 if (storedToken == null)
                 {
                     return new ApiResponse
@@ -111,14 +112,17 @@ namespace BlogFoodApi.Service
                 await manageAppDbContext.SaveChangesAsync();
 
                 //create new token
+                var user = await _manageUser.FindByIdAsync(ID);
                
-                var token =  GenerateJwt(user);
+                Task<RefreshModel> token = GenerateJwt(user);
 
+
+                RefreshModel resultToken = token.Result;
                 return new ApiResponse
                 {
                     Success = true,
                     Message = "Renew token success",
-                    Data = token
+                    Data = resultToken
                 };
 
 
@@ -146,7 +150,7 @@ namespace BlogFoodApi.Service
                 new Claim(ClaimTypes.Name, userName.DisplayName),
                 new Claim(ClaimTypes.NameIdentifier, userName.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, userName.Email),
+              //  new Claim(JwtRegisteredClaimNames.Email, userName.Email),
                 new Claim(JwtRegisteredClaimNames.Sub, userName.UserName),
             };
 
@@ -166,14 +170,15 @@ namespace BlogFoodApi.Service
 
             var refreshTokenEntity = new IdentityUserToken
             {
-             
+                Name = userName.UserName,
+                LoginProvider = "myToken",
                 IDaccessTokenJwt = token.Id,
                 UserId = userName.Id,
                 Value = refreshToken,
                 IsUsed = false,
                 IsRevoked = false,
-                IssuedAt = DateTime.UtcNow,
-                ExpiredAt = DateTime.UtcNow.AddHours(1)
+                IssuedAt = DateTime.Now,
+                ExpiredAt = DateTime.Now.AddHours(1)
             };
 
             await manageAppDbContext.AddAsync(refreshTokenEntity);
