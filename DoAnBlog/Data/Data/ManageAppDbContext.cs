@@ -39,8 +39,17 @@ namespace DataAccess
         public DbSet<Category>  categories { get; set; }
         public DbSet<PostCategory>  postCategories { get; set;}
         public DbSet<Comment>  comments { get; set; }
-
+        public  DbSet<IdentityUserToken>  UserTokens { get; set; } 
 
 
     }
+}
+public class   IdentityUserToken : IdentityUserToken<string>
+{
+    public DateTime RefreshTokenExpiry { get;set; }
+    public string IDaccessTokenJwt { get; set; }
+    public bool IsUsed { get; set; }
+    public bool IsRevoked { get; set; }
+    public DateTime IssuedAt { get; set; }
+    public DateTime ExpiredAt { get; set; }
 }

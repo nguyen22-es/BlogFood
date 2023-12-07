@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class migrations : Migration
+    public partial class Migrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -157,7 +157,12 @@ namespace Data.Migrations
                     UserId = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),                  
+                    IDaccessTokenJwt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: true),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: true),
+                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -235,7 +240,8 @@ namespace Data.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     PostID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Depth = table.Column<int>(type: "int", nullable: false)
+                    Depth = table.Column<int>(type: "int", nullable: false),
+                    CommentFatherID = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

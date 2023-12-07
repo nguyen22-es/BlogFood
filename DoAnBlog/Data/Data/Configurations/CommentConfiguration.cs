@@ -28,6 +28,9 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(c => c.Depth)
      .IsRequired();
 
+        builder.Property(c => c.CommentFatherID)
+    .IsRequired();
+
 
         builder.HasOne(r => r.Post)
           .WithMany()

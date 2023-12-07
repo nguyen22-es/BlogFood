@@ -13,6 +13,8 @@ namespace Data.Data.Entities
 
         public int Depth { get; set; }
 
+        public string CommentFatherID { get; set; }
+
         public ManageUser user { get; set; }
 
         public Post Post { get;set; }

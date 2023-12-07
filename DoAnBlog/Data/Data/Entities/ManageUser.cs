@@ -1,5 +1,6 @@
 ﻿
 
+using Data.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess.Data.Entities
@@ -16,6 +17,6 @@ namespace DataAccess.Data.Entities
         public virtual ICollection<Follow> FollowFollowings { get; set; } = new List<Follow>();
 
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
-
+       
     }
 }
