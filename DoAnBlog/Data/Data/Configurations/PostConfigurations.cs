@@ -24,7 +24,7 @@ namespace DataAccess.Configurations
             builder.Property(p => p.Title)
                 .IsRequired(); 
 
-            builder.Property(p => p.Content)
+            builder.Property(p => p.PostContentID)
                 .IsRequired(); 
 
             builder.Property(p => p.DatePosted)
@@ -39,6 +39,10 @@ namespace DataAccess.Configurations
                 .HasForeignKey(p => p.UserId)
                 .IsRequired(false);
 
+            builder.HasOne(p => p.PostContent)
+                .WithMany()
+                .HasForeignKey(p => p.PostContentID)
+                .IsRequired(false);
             
             builder.HasMany(p => p.PostCategories)
                 .WithOne(pc => pc.Post)

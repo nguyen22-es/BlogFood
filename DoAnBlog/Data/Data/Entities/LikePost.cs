@@ -6,7 +6,6 @@ namespace DataAccess.Data.Entities;
 
 public partial class LikePost
 {
-    public string? LikePostId { get; set; }
 
     public string? PostId { get; set; }
 

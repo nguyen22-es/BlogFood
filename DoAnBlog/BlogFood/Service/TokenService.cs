@@ -46,7 +46,7 @@ namespace BlogFoodApi.Service
                 // check phần header trong jwt xem thuật toán có đúng không
                 if (validatedToken is JwtSecurityToken jwtSecurityToken)
                 {
-                    var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase);
+                    var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
                     if (!result)//false
                     {
                         return new ApiResponse
@@ -66,7 +66,7 @@ namespace BlogFoodApi.Service
                         Message = "Refresh token does not exist"
                     };
                 }
-                if (storedToken.RefreshTokenExpiry < DateTime.Now)
+                if (storedToken.ExpiredAt < DateTime.Now)
                 {
                     return new ApiResponse
                     {
@@ -168,20 +168,34 @@ namespace BlogFoodApi.Service
             var JwtToken = new JwtSecurityTokenHandler().WriteToken(token);
             var refreshToken = GenerateRefreshToken();
 
-            var refreshTokenEntity = new IdentityUserToken
-            {
-                Name = userName.UserName,
-                LoginProvider = "myToken",
-                IDaccessTokenJwt = token.Id,
-                UserId = userName.Id,
-                Value = refreshToken,
-                IsUsed = false,
-                IsRevoked = false,
-                IssuedAt = DateTime.Now,
-                ExpiredAt = DateTime.Now.AddHours(1)
-            };
 
-            await manageAppDbContext.AddAsync(refreshTokenEntity);
+            
+            var refreshTokenSame = await manageAppDbContext.UserTokens.FirstOrDefaultAsync(t => t.UserId == userName.Id);
+            if (refreshTokenSame == null)
+            {
+                var refreshTokenEntity = new IdentityUserToken
+                {
+                    Name = userName.UserName,
+                    LoginProvider = "myToken",
+                    IDaccessTokenJwt = token.Id,
+                    UserId = userName.Id,
+                    Value = refreshToken,
+                    IsUsed = false,
+                    IsRevoked = false,
+                    IssuedAt = DateTime.Now,
+                    ExpiredAt = DateTime.Now.AddHours(1)
+                };
+
+                await manageAppDbContext.AddAsync(refreshTokenEntity);
+                await manageAppDbContext.SaveChangesAsync();
+
+            }
+
+            refreshTokenSame.Value = refreshToken;
+            refreshTokenSame.IssuedAt = DateTime.Now;
+            refreshTokenSame.ExpiredAt = DateTime.Now.AddHours(1);
+            refreshTokenSame.IDaccessTokenJwt = token.Id;
+             manageAppDbContext.Update(refreshTokenSame);
             await manageAppDbContext.SaveChangesAsync();
 
 

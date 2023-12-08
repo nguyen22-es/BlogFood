@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ManageAppDbContext))]
-    [Migration("20231207111823_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231208115752_CreateUpdate")]
+    partial class CreateUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,9 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime>("timeComment")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("CommentID");
 
                     b.HasIndex("PostID");
@@ -56,6 +59,25 @@ namespace Data.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("Comments", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Data.Entities.PostContent", b =>
+                {
+                    b.Property<string>("ContentPostID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ContentPostID");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostContents", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Data.Entities.Category", b =>
@@ -108,9 +130,6 @@ namespace Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LikePostId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PostId", "UserId");
 
@@ -197,10 +216,6 @@ namespace Data.Migrations
                     b.Property<string>("PostId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
 
@@ -211,6 +226,10 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PostContentID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -219,6 +238,8 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("PostId");
+
+                    b.HasIndex("PostContentID");
 
                     b.HasIndex("UserId");
 
@@ -437,6 +458,15 @@ namespace Data.Migrations
                     b.Navigation("user");
                 });
 
+            modelBuilder.Entity("Data.Data.Entities.PostContent", b =>
+                {
+                    b.HasOne("DataAccess.Data.Entities.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId");
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("DataAccess.Data.Entities.Follow", b =>
                 {
                     b.HasOne("DataAccess.Data.Entities.ManageUser", "Follower")
@@ -484,9 +514,15 @@ namespace Data.Migrations
 
             modelBuilder.Entity("DataAccess.Data.Entities.Post", b =>
                 {
+                    b.HasOne("Data.Data.Entities.PostContent", "PostContent")
+                        .WithMany()
+                        .HasForeignKey("PostContentID");
+
                     b.HasOne("DataAccess.Data.Entities.ManageUser", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("PostContent");
 
                     b.Navigation("User");
                 });

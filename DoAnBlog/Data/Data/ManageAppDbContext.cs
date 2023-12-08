@@ -41,7 +41,7 @@ namespace DataAccess
         public DbSet<Comment>  comments { get; set; }
         public  DbSet<IdentityUserToken>  UserTokens { get; set; } 
 
-
+        public DbSet<PostContent> postContents { get; set; }
     }
 }
 public class   IdentityUserToken : IdentityUserToken<string>

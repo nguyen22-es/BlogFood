@@ -10,6 +10,7 @@ namespace Data.Data.Entities
         public string UserID { get; set; }
 
         public string PostID { get; set; }
+        public DateTime timeComment { get;set; }
 
         public int Depth { get; set; }
 
