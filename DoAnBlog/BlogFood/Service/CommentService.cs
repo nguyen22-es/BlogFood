@@ -7,9 +7,9 @@ namespace BlogFoodApi.Service
 {
     public class CommentService : ICommentService
     {
-        public readonly ICommentsDbRepository  commentsDbRepository;
+        public readonly ICommentsDbRepository commentsDbRepository;
         private readonly IMapper _mapper;
-        public CommentService(ICommentsDbRepository commentsDbRepository , IMapper mapper) 
+        public CommentService(ICommentsDbRepository commentsDbRepository, IMapper mapper)
         {
             this.commentsDbRepository = commentsDbRepository;
             _mapper = mapper;
@@ -20,12 +20,12 @@ namespace BlogFoodApi.Service
             commentsDbRepository.DeleteCommentAsync(CommentID);
         }
 
-        List<CommentViewModel> ICommentService.GetCommentDepth(CommentViewModel commentViewModel)
+        List<CommentViewModel> ICommentService.GetCommentDepth(int Depth, string CommentParentsID)
         {
-            var comment = commentsDbRepository.GetAllCommentsDepth(commentViewModel.Depth, commentViewModel.CommentParentsID);
+            var comment = commentsDbRepository.GetAllCommentsDepth(Depth, CommentParentsID);
 
             var commentSameViewModel = _mapper.Map<List<Comment>, List<CommentViewModel>>(comment);
-         
+
 
             return commentSameViewModel;
         }

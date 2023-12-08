@@ -6,9 +6,11 @@ namespace BlogFoodApi.Service
     {
         List<CommentViewModel> GetCommentParents(string PostID);
 
-        List<CommentViewModel> GetCommentDepth(CommentViewModel commentViewModel);
+        List<CommentViewModel> GetCommentDepth(int Depth, string CommentParentsID);
 
         void DeleteComment(string CommentID);
+
+
 
     }
 }

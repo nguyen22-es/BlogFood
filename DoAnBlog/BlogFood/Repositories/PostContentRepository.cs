@@ -6,16 +6,17 @@ namespace BlogFoodApi.Repositories
     public class PostContentRepository : IPostContentRepository
     {
         private readonly ManageAppDbContext _manageAppDbContext;
-        public PostContentRepository(ManageAppDbContext manageAppDbContext) {
+        public PostContentRepository(ManageAppDbContext manageAppDbContext)
+        {
             _manageAppDbContext = manageAppDbContext;
         }
 
         public PostContent CreatePostContent(PostContent postContent)
         {
-            _manageAppDbContext.postContents.Add(postContent);
+            var post = _manageAppDbContext.postContents.Add(postContent);
             _manageAppDbContext.SaveChanges();
 
-            return postContent;
+            return post.Entity;
         }
 
         public void DeletePostContent(PostContent postContent)
@@ -41,7 +42,7 @@ namespace BlogFoodApi.Repositories
             _manageAppDbContext.postContents.Update(postContents);
             _manageAppDbContext.SaveChanges();
 
-            
+
 
         }
     }

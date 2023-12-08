@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository
 {
-    public class PostRepository:IPostDbRepository
+    public class PostRepository : IPostDbRepository
     {
         private readonly ManageAppDbContext _manageAppDbContext;
         public PostRepository(ManageAppDbContext manageAppDbContext)
@@ -15,7 +15,9 @@ namespace API.Repository
 
         public void CreatePosts(Post posts)
         {
-            throw new NotImplementedException();
+            _manageAppDbContext.Posts.Add(posts);
+            _manageAppDbContext.SaveChanges();
+
         }
 
         public void DeletePosts(string id)
@@ -25,9 +27,9 @@ namespace API.Repository
 
         public List<Post> GetAllTitle()
         {
-         var Post =  _manageAppDbContext.Posts.Include(c => c.User.DisplayName).OrderByDescending(x => x.DatePosted).ToList();
+            var posts = _manageAppDbContext.Posts.Include(p => p.User).OrderByDescending(x => x.DatePosted).ToList();
 
-            return Post;
+            return posts;
         }
 
         public void UpdatePosts(Post posts)

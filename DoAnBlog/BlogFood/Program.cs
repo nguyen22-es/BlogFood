@@ -1,4 +1,6 @@
-﻿using BlogFoodApi.Service;
+﻿using API.Repository;
+using BlogFoodApi.Repositories;
+using BlogFoodApi.Service;
 using DataAccess;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,11 +22,25 @@ var configuration = new ConfigurationBuilder()
 
 builder.Services.AddDbContext<ManageAppDbContext>(options =>
            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<ILikeService, LikeService>();
+builder.Services.AddScoped<IFollowService, FollowService>();
+builder.Services.AddScoped<IPostService, PostService>();
 
+// repositories
+builder.Services.AddTransient<ICategoryDbRepository, CategoryRepository>();
+builder.Services.AddTransient<IPostDbRepository, PostRepository>();
+builder.Services.AddTransient<ILikePostDbRepository, LikePostRepository>();
+builder.Services.AddTransient<ICommentsDbRepository, CommentsRepository>();
+builder.Services.AddTransient<IPostCategoryRepository, PostCategoryRepository>();
+builder.Services.AddTransient<IFollowDbRepository, FollowRepository>();
+builder.Services.AddTransient<IPostContentRepository, PostContentRepository>();
 builder.Services.AddIdentity<ManageUser, IdentityRole>()
     .AddEntityFrameworkStores<ManageAppDbContext>()
     .AddDefaultTokenProviders();
-
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<ITokenService,TokenService>();
 builder.Services.AddControllers();

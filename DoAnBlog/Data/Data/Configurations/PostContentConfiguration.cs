@@ -21,10 +21,6 @@ namespace Data.Data.Configurations
                 .IsRequired(false);
 
 
-            builder.HasOne(e => e.Post)
-                .WithMany()
-                .HasForeignKey(e => e.PostId)
-                .IsRequired(false);
 
         }
     }

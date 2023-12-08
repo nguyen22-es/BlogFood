@@ -5,9 +5,9 @@ namespace BlogFoodApi.Repositories
     public interface IPostCategoryRepository
     {
 
-        void CreatePostContent(PostContent postContent);
+        void CreateCategory(PostContent postContent);
 
-        void DeletePostContent(PostContent postContent);
+    //    void DeletePostContent(PostContent postContent);
 
 
 

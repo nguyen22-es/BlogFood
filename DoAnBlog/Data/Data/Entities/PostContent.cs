@@ -6,9 +6,9 @@ namespace Data.Data.Entities
     {
         public string ContentPostID { get; set; }
 
-        public string? PostId { get; set; }
+   
         public string? Content { get; set; }
-        public virtual Post? Post { get; set; }
+      
    
     }
 }
