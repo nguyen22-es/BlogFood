@@ -1,5 +1,6 @@
 ﻿using Data.Data.Entities;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogFoodApi.Repositories
 {
@@ -28,19 +29,19 @@ namespace BlogFoodApi.Repositories
 
         public PostContent GetContent(string PostID)
         {
-            var postContents = _manageAppDbContext.postContents.FirstOrDefault(i => i.ContentPostID == PostID);
+            var postContents = _manageAppDbContext.postContents.FirstOrDefault(i => i.PostId == PostID);
 
             return postContents;
         }
 
-        public void UpdatePostContent(string postContent, string ID)
+        public async Task UpdatePostContent(string postContent, string ID)
         {
-            var postContents = _manageAppDbContext.postContents.FirstOrDefault(i => i.ContentPostID == ID);
+            var postContents = await _manageAppDbContext.postContents.FirstOrDefaultAsync(i => i.ContentPostID == ID);
 
             postContents.Content = postContent;
 
             _manageAppDbContext.postContents.Update(postContents);
-            _manageAppDbContext.SaveChanges();
+          await _manageAppDbContext.SaveChangesAsync();
 
 
 

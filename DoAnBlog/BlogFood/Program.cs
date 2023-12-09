@@ -1,4 +1,5 @@
 ﻿using API.Repository;
+using API.SignalrHub;
 using BlogFoodApi.Repositories;
 using BlogFoodApi.Service;
 using DataAccess;
@@ -45,7 +46,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<ITokenService,TokenService>();
 builder.Services.AddControllers();
 
-
+builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -95,6 +96,21 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JWT:ValidAudience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
         ClockSkew = new TimeSpan(0, 0, 5)
+
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context => {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken)
+                && path.StartsWithSegments("/SignalrHub"))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -112,11 +128,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseRouting();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<ChatHub>("/SignalrHub");
+});
 app.Run();

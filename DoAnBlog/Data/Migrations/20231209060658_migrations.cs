@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Migrations : Migration
+    public partial class migrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -157,7 +157,9 @@ namespace Data.Migrations
                     UserId = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),                  
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RefreshTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IDaccessTokenJwt = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsUsed = table.Column<bool>(type: "bit", nullable: true),
                     IsRevoked = table.Column<bool>(type: "bit", nullable: true),
@@ -176,38 +178,27 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Fllows",
+                name: "Follows",
                 columns: table => new
                 {
                     FollowerId = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     FollowId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FollowingId = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    ManageUserId = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    ManageUserId1 = table.Column<string>(type: "nvarchar(50)", nullable: true)
+                    FollowingId = table.Column<string>(type: "nvarchar(50)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Fllows", x => x.FollowerId);
+                    table.PrimaryKey("PK_Follows", x => x.FollowerId);
                     table.ForeignKey(
-                        name: "FK_Fllows_AspNetUsers_FollowerId",
+                        name: "FK_Follows_AspNetUsers_FollowerId",
                         column: x => x.FollowerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Fllows_AspNetUsers_FollowingId",
+                        name: "FK_Follows_AspNetUsers_FollowingId",
                         column: x => x.FollowingId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Fllows_AspNetUsers_ManageUserId",
-                        column: x => x.ManageUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Fllows_AspNetUsers_ManageUserId1",
-                        column: x => x.ManageUserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -218,7 +209,6 @@ namespace Data.Migrations
                     UserId = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     NameFood = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Likes = table.Column<int>(type: "int", nullable: true)
                 },
@@ -229,7 +219,8 @@ namespace Data.Migrations
                         name: "FK_Posts_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,6 +231,7 @@ namespace Data.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     PostID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    timeComment = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Depth = table.Column<int>(type: "int", nullable: false),
                     CommentFatherID = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -255,7 +247,8 @@ namespace Data.Migrations
                         name: "FK_Comments_Posts_PostID",
                         column: x => x.PostID,
                         principalTable: "Posts",
-                        principalColumn: "PostId");
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -263,8 +256,7 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     PostId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    LikePostId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -273,8 +265,7 @@ namespace Data.Migrations
                         name: "FK_LikePosts_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_LikePosts_Posts_PostId",
                         column: x => x.PostId,
@@ -289,8 +280,7 @@ namespace Data.Migrations
                 {
                     LinkId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PostId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CategoryId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -301,15 +291,30 @@ namespace Data.Migrations
                         principalTable: "Categories",
                         principalColumn: "CategoryId");
                     table.ForeignKey(
-                        name: "FK_PostCategories_Categories_CategoryId1",
-                        column: x => x.CategoryId1,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryId");
-                    table.ForeignKey(
                         name: "FK_PostCategories_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "PostId");
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PostContents",
+                columns: table => new
+                {
+                    ContentPostID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PostId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PostContents", x => x.ContentPostID);
+                    table.ForeignKey(
+                        name: "FK_PostContents_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -362,19 +367,9 @@ namespace Data.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Fllows_FollowingId",
-                table: "Fllows",
+                name: "IX_Follows_FollowingId",
+                table: "Follows",
                 column: "FollowingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Fllows_ManageUserId",
-                table: "Fllows",
-                column: "ManageUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Fllows_ManageUserId1",
-                table: "Fllows",
-                column: "ManageUserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LikePosts_UserId",
@@ -387,14 +382,17 @@ namespace Data.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostCategories_CategoryId1",
-                table: "PostCategories",
-                column: "CategoryId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PostCategories_PostId",
                 table: "PostCategories",
-                column: "PostId");
+                column: "PostId",
+                unique: true,
+                filter: "[PostId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PostContents_PostId",
+                table: "PostContents",
+                column: "PostId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",
@@ -424,13 +422,16 @@ namespace Data.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Fllows");
+                name: "Follows");
 
             migrationBuilder.DropTable(
                 name: "LikePosts");
 
             migrationBuilder.DropTable(
                 name: "PostCategories");
+
+            migrationBuilder.DropTable(
+                name: "PostContents");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

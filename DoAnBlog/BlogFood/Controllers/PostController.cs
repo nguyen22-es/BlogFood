@@ -1,5 +1,7 @@
 ﻿using BlogFoodApi.Service;
 using BlogFoodApi.ViewModel;
+using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,16 +14,22 @@ namespace BlogFoodApi.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
+        public readonly UserManager<ManageUser> manageUser;
         private readonly IPostService _postService;
-        public PostController(IPostService postService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public PostController(IHttpContextAccessor httpContextAccessor,IPostService postService, UserManager<ManageUser> manageUser)
         {
             _postService = postService;
+            this.manageUser = manageUser;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: api/<PostController>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TitleViewModel>>> Get()
         {
+          
+
             var Post = _postService.titleViewModels();
 
             if (Post == null)
@@ -34,6 +42,9 @@ namespace BlogFoodApi.Controllers
         [HttpGet("{PostID}")]
         public async Task<ActionResult<IEnumerable<TitleViewModel>>> Get(string PostID)
         {
+           
+
+
             var postContent = _postService.GetContent(PostID);
             if (postContent == null)
                 return NotFound();
@@ -46,7 +57,7 @@ namespace BlogFoodApi.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] RequestPostViewModel requestPostViewModel)
         {
-            _postService.CreatePost(requestPostViewModel);
+          await  _postService.CreatePost(requestPostViewModel);
 
 
             return Ok();
@@ -54,14 +65,22 @@ namespace BlogFoodApi.Controllers
 
         // PUT api/<PostController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> Put([FromBody] RequestPostViewModel requestPostViewModel)
         {
+            await _postService.UpdatePost( requestPostViewModel);
+
+            return Ok();
+
         }
 
         // DELETE api/<PostController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(string PostID)
         {
+            await _postService.DeletePost(PostID);
+
+            return Ok();
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Follow> builder)
         {
-            builder.ToTable("Fllows"); 
+            builder.ToTable("Follows"); 
             builder.HasKey(f => f.FollowerId); 
 
             builder.Property(f => f.FollowerId)
@@ -28,15 +28,15 @@ namespace DataAccess.Configurations
 
 
             builder.HasOne(f => f.Follower)
-           .WithMany()
+           .WithMany(f => f.FollowFollowers)
            .HasForeignKey(f => f.FollowerId)
            .OnDelete(DeleteBehavior.NoAction);
 
            
                builder.HasOne(f => f.Following)
-              .WithMany()
+              .WithMany(f => f.FollowFollowings)
               .HasForeignKey(f => f.FollowingId)
-              .OnDelete(DeleteBehavior.NoAction);
+              .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

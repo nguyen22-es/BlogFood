@@ -6,10 +6,11 @@ namespace API.Repository
 {
     public interface IPostDbRepository
     {
-        void CreatePosts(Post posts);
+        Post GetTitle(string PostID);
+       Task CreatePosts(Post posts);
         List<Post> GetAllTitle();
-        void DeletePosts(string id);
-        void UpdatePosts(Post  posts); // sửa post
+        Task DeletePosts(string id);
+        Task UpdatePosts(Post  posts); // sửa post
 
     }
 }

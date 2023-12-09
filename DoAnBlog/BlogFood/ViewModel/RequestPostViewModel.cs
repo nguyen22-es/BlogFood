@@ -7,5 +7,7 @@
         public string UserID { get; set; }
         public string Date { get; set; }
         public string NameFood { get; set; }
+        public string PostId { get; set; }
+        public string NameUser { get; set; }
     }
 }

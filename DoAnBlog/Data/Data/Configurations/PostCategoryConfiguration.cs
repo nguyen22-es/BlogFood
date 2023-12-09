@@ -29,12 +29,13 @@ namespace DataAccess.Configurations
 
            
             builder.HasOne(e => e.Post)
-                .WithMany()
-                .HasForeignKey(e => e.PostId)
-                .IsRequired(false);
+                .WithOne(e => e.PostCategories)
+                .HasForeignKey<PostCategory>(e => e.PostId)
+                  .OnDelete(DeleteBehavior.Cascade);
+              
 
             builder.HasOne(e => e.Category)
-                .WithMany()
+                .WithMany(e => e.PostCategories)
                 .HasForeignKey(e => e.CategoryId)
                 .IsRequired(false);
         }

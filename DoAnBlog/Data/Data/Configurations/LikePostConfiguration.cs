@@ -21,11 +21,13 @@ namespace DataAccess.Configurations
 
             builder.HasOne(lp => lp.Post)
                 .WithMany()
-                .HasForeignKey(lp => lp.PostId);
+                .HasForeignKey(lp => lp.PostId)
+                 .OnDelete(DeleteBehavior.Cascade); 
 
             builder.HasOne(lp => lp.User)
                 .WithMany()
-                .HasForeignKey(lp => lp.UserId);
+                .HasForeignKey(lp => lp.UserId)
+                 .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

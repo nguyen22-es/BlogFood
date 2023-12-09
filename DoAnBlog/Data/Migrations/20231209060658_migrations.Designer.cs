@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ManageAppDbContext))]
-    [Migration("20231208175631_update")]
-    partial class update
+    [Migration("20231209060658_migrations")]
+    partial class migrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,9 +71,12 @@ namespace Data.Migrations
 
                     b.Property<string>("PostId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ContentPostID");
+
+                    b.HasIndex("PostId")
+                        .IsUnique();
 
                     b.ToTable("PostContents", (string)null);
                 });
@@ -104,21 +107,11 @@ namespace Data.Migrations
                     b.Property<string>("FollowingId")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ManageUserId")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ManageUserId1")
-                        .HasColumnType("nvarchar(50)");
-
                     b.HasKey("FollowerId");
 
                     b.HasIndex("FollowingId");
 
-                    b.HasIndex("ManageUserId");
-
-                    b.HasIndex("ManageUserId1");
-
-                    b.ToTable("Fllows", (string)null);
+                    b.ToTable("Follows", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Data.Entities.LikePost", b =>
@@ -224,10 +217,6 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PostContentID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -236,8 +225,6 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("PostId");
-
-                    b.HasIndex("PostContentID");
 
                     b.HasIndex("UserId");
 
@@ -252,9 +239,6 @@ namespace Data.Migrations
                     b.Property<string>("CategoryId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CategoryId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("PostId")
                         .HasColumnType("nvarchar(450)");
 
@@ -262,9 +246,9 @@ namespace Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("CategoryId1");
-
-                    b.HasIndex("PostId");
+                    b.HasIndex("PostId")
+                        .IsUnique()
+                        .HasFilter("[PostId] IS NOT NULL");
 
                     b.ToTable("PostCategories", (string)null);
                 });
@@ -442,7 +426,7 @@ namespace Data.Migrations
                     b.HasOne("DataAccess.Data.Entities.Post", "Post")
                         .WithMany()
                         .HasForeignKey("PostID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DataAccess.Data.Entities.ManageUser", "user")
@@ -456,26 +440,29 @@ namespace Data.Migrations
                     b.Navigation("user");
                 });
 
+            modelBuilder.Entity("Data.Data.Entities.PostContent", b =>
+                {
+                    b.HasOne("DataAccess.Data.Entities.Post", "Post")
+                        .WithOne("PostContent")
+                        .HasForeignKey("Data.Data.Entities.PostContent", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("DataAccess.Data.Entities.Follow", b =>
                 {
                     b.HasOne("DataAccess.Data.Entities.ManageUser", "Follower")
-                        .WithMany()
+                        .WithMany("FollowFollowers")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DataAccess.Data.Entities.ManageUser", "Following")
-                        .WithMany()
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("DataAccess.Data.Entities.ManageUser", null)
-                        .WithMany("FollowFollowers")
-                        .HasForeignKey("ManageUserId");
-
-                    b.HasOne("DataAccess.Data.Entities.ManageUser", null)
                         .WithMany("FollowFollowings")
-                        .HasForeignKey("ManageUserId1");
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Follower");
 
@@ -493,7 +480,7 @@ namespace Data.Migrations
                     b.HasOne("DataAccess.Data.Entities.ManageUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -503,15 +490,10 @@ namespace Data.Migrations
 
             modelBuilder.Entity("DataAccess.Data.Entities.Post", b =>
                 {
-                    b.HasOne("Data.Data.Entities.PostContent", "PostContent")
-                        .WithMany()
-                        .HasForeignKey("PostContentID");
-
                     b.HasOne("DataAccess.Data.Entities.ManageUser", "User")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("PostContent");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });
@@ -519,16 +501,13 @@ namespace Data.Migrations
             modelBuilder.Entity("DataAccess.Data.Entities.PostCategory", b =>
                 {
                     b.HasOne("DataAccess.Data.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("PostCategories")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("DataAccess.Data.Entities.Category", null)
-                        .WithMany("PostCategories")
-                        .HasForeignKey("CategoryId1");
-
                     b.HasOne("DataAccess.Data.Entities.Post", "Post")
-                        .WithMany("PostCategories")
-                        .HasForeignKey("PostId");
+                        .WithOne("PostCategories")
+                        .HasForeignKey("DataAccess.Data.Entities.PostCategory", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Category");
 
@@ -602,7 +581,11 @@ namespace Data.Migrations
 
             modelBuilder.Entity("DataAccess.Data.Entities.Post", b =>
                 {
-                    b.Navigation("PostCategories");
+                    b.Navigation("PostCategories")
+                        .IsRequired();
+
+                    b.Navigation("PostContent")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

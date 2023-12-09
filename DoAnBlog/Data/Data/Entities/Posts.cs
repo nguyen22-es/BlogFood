@@ -15,14 +15,11 @@ namespace DataAccess.Data.Entities
         public string NameFood { get; set; }
 
         public string Title { get; set; } 
-
-        public string PostContentID { get; set; } 
-
         public DateTime DatePosted { get; set; } 
 
         public int? Likes { get; set; }
 
-        public virtual ICollection<PostCategory> PostCategories { get; set; } = new List<PostCategory>();
+        public virtual PostCategory PostCategories { get; set; }
         public virtual PostContent PostContent { get; set; }
         public  ManageUser? User { get; set; }
 

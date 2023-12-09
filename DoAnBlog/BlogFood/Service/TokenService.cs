@@ -160,7 +160,7 @@ namespace BlogFoodApi.Service
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.UtcNow.AddSeconds(30),
+                expires: DateTime.Now.AddHours(5),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );
@@ -190,13 +190,17 @@ namespace BlogFoodApi.Service
                 await manageAppDbContext.SaveChangesAsync();
 
             }
+            else
+            {
+                refreshTokenSame.Value = refreshToken;
+                refreshTokenSame.IssuedAt = DateTime.Now;
+                refreshTokenSame.ExpiredAt = DateTime.Now.AddHours(1);
+                refreshTokenSame.IDaccessTokenJwt = token.Id;
+                manageAppDbContext.Update(refreshTokenSame);
+                await manageAppDbContext.SaveChangesAsync();
+            }
 
-            refreshTokenSame.Value = refreshToken;
-            refreshTokenSame.IssuedAt = DateTime.Now;
-            refreshTokenSame.ExpiredAt = DateTime.Now.AddHours(1);
-            refreshTokenSame.IDaccessTokenJwt = token.Id;
-             manageAppDbContext.Update(refreshTokenSame);
-            await manageAppDbContext.SaveChangesAsync();
+           
 
 
             return new RefreshModel

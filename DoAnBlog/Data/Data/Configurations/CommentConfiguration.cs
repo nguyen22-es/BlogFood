@@ -11,10 +11,6 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.ToTable("Comments");
         builder.HasKey(r => r.CommentID);
 
-        builder.HasOne(r => r.user)
-            .WithMany()
-            .HasForeignKey(r => r.UserID)
-              .OnDelete(DeleteBehavior.NoAction);
 
         builder.Property(c => c.Content)
             .IsRequired();
@@ -35,7 +31,7 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.HasOne(r => r.Post)
           .WithMany()
           .HasForeignKey(r => r.PostID)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(r => r.user)
          .WithMany()
          .HasForeignKey(r => r.UserID)

@@ -22,6 +22,11 @@ namespace Data.Data.Configurations
 
 
 
+            builder.HasOne(p => p.Post)
+                 .WithOne(p => p.PostContent)
+                 .HasForeignKey<PostContent>(p => p.PostId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

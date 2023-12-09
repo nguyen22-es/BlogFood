@@ -6,7 +6,7 @@ namespace BlogFoodApi.Repositories
     {
         PostContent CreatePostContent(PostContent postContent);
 
-        void UpdatePostContent(string postContent ,string ID);
+        Task UpdatePostContent(string postContent ,string ID);
 
 
         void DeletePostContent(PostContent postContent);

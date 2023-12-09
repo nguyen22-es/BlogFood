@@ -13,17 +13,13 @@ namespace API.Repository
             this._manageAppDbContext = manageAppDbContext;
         }
 
-        public void CreatePosts(Post posts)
+        public async Task CreatePosts(Post posts)
         {
-            _manageAppDbContext.Posts.Add(posts);
-            _manageAppDbContext.SaveChanges();
+            await  _manageAppDbContext.Posts.AddAsync(posts);
+          await  _manageAppDbContext.SaveChangesAsync();
 
         }
 
-        public void DeletePosts(string id)
-        {
-            throw new NotImplementedException();
-        }
 
         public List<Post> GetAllTitle()
         {
@@ -32,9 +28,30 @@ namespace API.Repository
             return posts;
         }
 
-        public void UpdatePosts(Post posts)
+        public Post GetTitle(string PostID)
         {
-            throw new NotImplementedException();
+            var posts = _manageAppDbContext.Posts.Include(c => c.User).FirstOrDefault(c => c.PostId == PostID);
+
+            return posts;
+        }
+
+        public async Task UpdatePosts(Post posts)
+        {
+            var postSame = await _manageAppDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == posts.PostId);
+
+            postSame.Title = postSame.Title;
+            postSame.NameFood = postSame.NameFood;
+
+             _manageAppDbContext.Posts.Update(postSame);
+
+        }
+
+        async Task IPostDbRepository.DeletePosts(string id)
+        {
+            var posts = await _manageAppDbContext.Posts.FirstOrDefaultAsync(c => c.PostId == id);
+
+
+             _manageAppDbContext.Posts.Remove(posts);
         }
     }
 }

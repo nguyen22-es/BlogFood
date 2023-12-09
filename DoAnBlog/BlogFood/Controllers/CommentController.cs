@@ -19,7 +19,7 @@ namespace BlogFoodApi.Controllers
 
         // GET: api/<CommentController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommentViewModel>>> Get(string PostID)
+        public async Task<ActionResult<IEnumerable<CommentViewModel>>> Get(string PostID) // lấy commnet khi nhấn vào hiển thị comment trong bài viết
         {
             var CommentParents = commentService.GetCommentParents(PostID);
 
@@ -28,7 +28,7 @@ namespace BlogFoodApi.Controllers
 
         // GET api/<CommentController>/5
         [HttpGet("{Depth}")]
-        public async Task<ActionResult<IEnumerable<CommentViewModel>>> Get(int Depth, string CommentParentsID)
+        public async Task<ActionResult<IEnumerable<CommentViewModel>>> Get(int Depth, string CommentParentsID) // lấy những comment con sau đấy
         {
             var CommentDepth = commentService.GetCommentDepth(Depth, CommentParentsID);
 

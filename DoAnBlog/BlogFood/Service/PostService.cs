@@ -4,6 +4,7 @@ using BlogFoodApi.Repositories;
 using BlogFoodApi.ViewModel;
 using Data.Data.Entities;
 using DataAccess.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlogFoodApi.Service
 {
@@ -20,20 +21,13 @@ namespace BlogFoodApi.Service
             this.mapper = mapper;
         }
 
-        public void CreatePost(RequestPostViewModel requestPostViewModel)
+        public async Task CreatePost(RequestPostViewModel requestPostViewModel)
         {
-            var postContent = new PostContent
-            {
-                ContentPostID = Guid.NewGuid().ToString(),
-                Content = requestPostViewModel.Content
-            };
-
-            postContentRepository.CreatePostContent(postContent);
 
 
             var post = new Post
             {
-                PostContentID = postContent.ContentPostID,
+
                 PostId = Guid.NewGuid().ToString(),
                 Title = requestPostViewModel.Title,
                 NameFood = requestPostViewModel.NameFood,
@@ -42,17 +36,44 @@ namespace BlogFoodApi.Service
 
             };
 
-            postDbRepository.CreatePosts(post);
+           await postDbRepository.CreatePosts(post);
 
 
+            var postContent = new PostContent
+            {
+                ContentPostID = Guid.NewGuid().ToString(),
+                Content = requestPostViewModel.Content,
+                PostId = post.PostId,
+                
+            };
 
+            postContentRepository.CreatePostContent(postContent);
+         
         }
 
-        public PostContent GetContent(string PostID)
+        public async Task DeletePost(string PostID)
+        {
+             await  postDbRepository.DeletePosts(PostID);
+        }
+
+        public RequestPostViewModel GetContent(string PostID)
         {
             var Content = postContentRepository.GetContent(PostID);
+            var title = postDbRepository.GetTitle(PostID);
+            var Request = new RequestPostViewModel { 
+            
+            Content = Content.Content,
+            Date = title.DatePosted.ToString("G"),
+            NameFood = title.NameFood,
+            UserID = title.UserId,
+            Title = title.Title,
+            NameUser = title.User.DisplayName,
+            PostId = title.PostId
+            };
 
-            return Content;
+          
+
+            return Request;
         }
 
         public List<TitleViewModel> titleViewModels()
@@ -64,6 +85,25 @@ namespace BlogFoodApi.Service
 
 
             return titleSameViewModel;
+        }
+
+        public async Task UpdatePost([FromBody] RequestPostViewModel requestPostViewModel)
+        {
+            var Post = new Post
+            {
+                PostId  = requestPostViewModel.PostId,
+                UserId  = requestPostViewModel.UserID,
+
+                NameFood = requestPostViewModel.NameFood,
+
+                Title =requestPostViewModel.Title,
+             };
+
+
+            await postDbRepository.UpdatePosts(Post);
+
+
+             await    postContentRepository.UpdatePostContent(requestPostViewModel.PostId, requestPostViewModel.Content);
         }
     }
 }
