@@ -11,17 +11,19 @@ namespace BlogFoodApi.Service
     public class PostService : IPostService
     {
         private readonly IPostDbRepository postDbRepository;
+        private readonly IPostCategoryRepository  category;
         private readonly IPostContentRepository postContentRepository;
         private IMapper mapper;
 
-        public PostService(IPostDbRepository postDbRepository, IPostContentRepository postContentRepository, IMapper mapper)
+        public PostService(IPostCategoryRepository category,IPostDbRepository postDbRepository, IPostContentRepository postContentRepository, IMapper mapper)
         {
             this.postDbRepository = postDbRepository;
             this.postContentRepository = postContentRepository;
             this.mapper = mapper;
+            this.category = category;
         }
 
-        public async Task CreatePost(RequestPostViewModel requestPostViewModel)
+        public async Task CreatePost(RequestPostViewModel requestPostViewModel,string UserID)
         {
 
 
@@ -29,15 +31,13 @@ namespace BlogFoodApi.Service
             {
 
                 PostId = Guid.NewGuid().ToString(),
-                Title = requestPostViewModel.Title,
-                NameFood = requestPostViewModel.NameFood,
-                UserId = requestPostViewModel.UserID,
+                NameFood = requestPostViewModel.Title.NameFood,             
+                UserId = UserID,
                 DatePosted = DateTime.Now
 
             };
 
            await postDbRepository.CreatePosts(post);
-
 
             var postContent = new PostContent
             {
@@ -47,8 +47,21 @@ namespace BlogFoodApi.Service
                 
             };
 
-            postContentRepository.CreatePostContent(postContent);
-         
+            await postContentRepository.CreatePostContent(postContent);
+
+            var PostCategory = new PostCategory {LinkId = Guid.NewGuid().ToString(), CategoryId = requestPostViewModel.category,PostId = post.PostId };
+             await category.CreateCategory(PostCategory);
+
+            var Food = new FoodIngredient {FoodID = Guid.NewGuid().ToString(), PostID = post.PostId, CookingTime = requestPostViewModel.CookingTime };
+            await postContentRepository.CreateFood(Food);
+
+
+            foreach (var item in requestPostViewModel.Ingredients)
+            {
+                await postContentRepository.CreateIngredient(new Ingredients { NameIngredient = item,ID = Guid.NewGuid().ToString() , FoodIngredientId = Food.FoodID});
+            }
+
+
         }
 
         public async Task DeletePost(string PostID)
@@ -60,15 +73,23 @@ namespace BlogFoodApi.Service
         {
             var Content = postContentRepository.GetContent(PostID);
             var title = postDbRepository.GetTitle(PostID);
+            var Food = postDbRepository.GetFood(PostID);
+            var Ingredients = new List<string>();
+            foreach (var item in Food.Ingredients)
+            {
+
+                Ingredients.Add(item.NameIngredient);
+            }
+
+            var titleViewModel = mapper.Map<Post, TitleViewModel>(title);
+         
             var Request = new RequestPostViewModel { 
-            
-            Content = Content.Content,
-            Date = title.DatePosted.ToString("G"),
-            NameFood = title.NameFood,
-            UserID = title.UserId,
-            Title = title.Title,
-            NameUser = title.User.DisplayName,
-            PostId = title.PostId
+                Title = titleViewModel,
+                Content = Content.Content,
+                CookingTime = Food.CookingTime,
+                Ingredients = Ingredients,
+                category = title.PostCategories.Category.FoodType
+
             };
 
           
@@ -91,19 +112,19 @@ namespace BlogFoodApi.Service
         {
             var Post = new Post
             {
-                PostId  = requestPostViewModel.PostId,
+              /*  PostId  = requestPostViewModel.PostId,
                 UserId  = requestPostViewModel.UserID,
 
-                NameFood = requestPostViewModel.NameFood,
+                FoodID = requestPostViewModel.NameFood,
 
-                Title =requestPostViewModel.Title,
+                NameFood =requestPostViewModel.Title,*/
              };
 
 
             await postDbRepository.UpdatePosts(Post);
 
 
-             await    postContentRepository.UpdatePostContent(requestPostViewModel.PostId, requestPostViewModel.Content);
+         //    await    postContentRepository.UpdatePostContent(requestPostViewModel.PostId, requestPostViewModel.Content);
         }
     }
 }

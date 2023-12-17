@@ -35,13 +35,6 @@ namespace BlogFoodApi.Controllers
             return Ok(CommentDepth);
         }
 
-        // POST api/<CommentController>
-        /* [HttpPost]
-         public void Post()
-         {
-             commentService.cr
-
-         }*/
 
         // PUT api/<CommentController>/5
         [HttpPut("{id}")]

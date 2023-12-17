@@ -213,11 +213,11 @@ namespace Data.Migrations
                     b.Property<int?>("Likes")
                         .HasColumnType("int");
 
-                    b.Property<string>("NameFood")
+                    b.Property<string>("FoodID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("NameFood")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

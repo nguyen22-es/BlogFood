@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using Data.Data.Entities;
+using DataAccess;
 using DataAccess.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,9 +29,25 @@ namespace API.Repository
             return posts;
         }
 
+        public FoodIngredient GetFood(string post)
+        {
+
+            var FoodIngredient = _manageAppDbContext.foodIngredients.Include(p => p.Ingredients).FirstOrDefault(u => u.PostID == post);
+
+            return FoodIngredient;
+
+        }
+
+        public List<RatingPost> getRating(string PostID)
+        {
+            var posts = _manageAppDbContext.ratingPosts.Where(n => n.PostId == PostID).ToList();
+
+            return posts;
+        }
+
         public Post GetTitle(string PostID)
         {
-            var posts = _manageAppDbContext.Posts.Include(c => c.User).FirstOrDefault(c => c.PostId == PostID);
+            var posts = _manageAppDbContext.Posts.Include(c => c.User).Include(n => n.PostCategories).ThenInclude(n => n.Category).FirstOrDefault(c => c.PostId == PostID);
 
             return posts;
         }
@@ -39,8 +56,8 @@ namespace API.Repository
         {
             var postSame = await _manageAppDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == posts.PostId);
 
-            postSame.Title = postSame.Title;
             postSame.NameFood = postSame.NameFood;
+       
 
              _manageAppDbContext.Posts.Update(postSame);
 

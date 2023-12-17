@@ -40,8 +40,11 @@ namespace DataAccess
         public DbSet<PostCategory>  postCategories { get; set;}
         public DbSet<Comment>  comments { get; set; }
         public  DbSet<IdentityUserToken>  UserTokens { get; set; } 
-
+        public DbSet<RatingPost> ratingPosts { get;set; }
         public DbSet<PostContent> postContents { get; set; }
+        public DbSet<FoodIngredient>  foodIngredients { get; set; }
+        public DbSet<Ingredients>  Ingredients { get; set; }
+
     }
 }
 public class   IdentityUserToken : IdentityUserToken<string>

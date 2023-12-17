@@ -12,13 +12,27 @@ namespace BlogFoodApi.Repositories
             _manageAppDbContext = manageAppDbContext;
         }
 
-        public PostContent CreatePostContent(PostContent postContent)
+        public async Task CreateFood(FoodIngredient foodIngredient)
         {
-            var post = _manageAppDbContext.postContents.Add(postContent);
-            _manageAppDbContext.SaveChanges();
-
-            return post.Entity;
+            _manageAppDbContext.foodIngredients.Add(foodIngredient);
+          await _manageAppDbContext.SaveChangesAsync();
         }
+
+        public async Task CreateIngredient(Ingredients ingredients)
+        {
+            _manageAppDbContext.Ingredients.Add(ingredients);
+          await  _manageAppDbContext.SaveChangesAsync();
+        }
+
+        public async Task  CreatePostContent(PostContent postContent)
+        {
+            _manageAppDbContext.postContents.Add(postContent);
+          await  _manageAppDbContext.SaveChangesAsync();
+
+
+        }
+
+
 
         public void DeletePostContent(PostContent postContent)
         {

@@ -12,9 +12,9 @@ namespace BlogFoodApi.Mapper
             CreateMap<Post, TitleViewModel>()
                 .ForMember(dst => dst.PostID, opt => opt.MapFrom(x => x.PostId))
                 .ForMember(dst => dst.NameWrite, opt => opt.MapFrom(x => x.User.DisplayName))
-                .ForMember(dst => dst.Title, opt => opt.MapFrom(x => x.Title))
                 .ForMember(dst => dst.NameFood, opt => opt.MapFrom(x => x.NameFood))
                 .ForMember(dst => dst.Like, opt => opt.MapFrom(x => x.Likes))
+             .ForMember(dst => dst.Rating, opt => opt.MapFrom(x => x.average != null ? (int)x.average : 0))
                 .ForMember(dst => dst.Date, opt => opt.MapFrom(x => x.DatePosted.ToString("dd / MM / yy")));
             CreateMap<TitleViewModel, Post>();
         }

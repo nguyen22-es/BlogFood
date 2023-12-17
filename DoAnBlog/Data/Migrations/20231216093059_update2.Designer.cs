@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ManageAppDbContext))]
-    partial class ManageAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231216093059_update2")]
+    partial class update2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,12 +72,9 @@ namespace Data.Migrations
 
                     b.Property<string>("PostID")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("FoodID");
-
-                    b.HasIndex("PostID")
-                        .IsUnique();
 
                     b.ToTable("FoodIngredients", (string)null);
                 });
@@ -266,6 +266,10 @@ namespace Data.Migrations
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FoodID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("Likes")
                         .HasColumnType("int");
 
@@ -276,8 +280,9 @@ namespace Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<float?>("average")
-                        .HasColumnType("real");
+                    b.Property<string>("ratingID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PostId");
 
@@ -499,7 +504,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("DataAccess.Data.Entities.Post", "Post")
                         .WithOne()
-                        .HasForeignKey("Data.Data.Entities.FoodIngredient", "PostID")
+                        .HasForeignKey("Data.Data.Entities.FoodIngredient", "FoodID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -531,7 +536,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Data.Entities.RatingPost", b =>
                 {
                     b.HasOne("DataAccess.Data.Entities.Post", "Post")
-                        .WithMany("ratingPost")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -687,8 +692,6 @@ namespace Data.Migrations
 
                     b.Navigation("PostContent")
                         .IsRequired();
-
-                    b.Navigation("ratingPost");
                 });
 #pragma warning restore 612, 618
         }

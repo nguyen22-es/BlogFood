@@ -4,7 +4,11 @@ namespace BlogFoodApi.Repositories
 {
     public interface IPostContentRepository
     {
-        PostContent CreatePostContent(PostContent postContent);
+        Task CreatePostContent(PostContent postContent);
+
+        Task CreateFood(FoodIngredient foodIngredient);
+
+        Task  CreateIngredient(Ingredients ingredients);
 
         Task UpdatePostContent(string postContent ,string ID);
 

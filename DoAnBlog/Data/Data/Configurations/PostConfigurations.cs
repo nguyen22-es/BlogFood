@@ -17,11 +17,9 @@ namespace DataAccess.Configurations
 
             builder.Property(p => p.UserId)
                 .IsRequired(false); 
+ 
 
             builder.Property(p => p.NameFood)
-                .IsRequired(); 
-
-            builder.Property(p => p.Title)
                 .IsRequired(); 
 
 
@@ -31,6 +29,8 @@ namespace DataAccess.Configurations
             builder.Property(p => p.Likes)
                 .IsRequired(false);
 
+            builder.Property(p => p.average)
+                .IsRequired(false);
 
             builder.HasOne(p => p.User)
                 .WithMany(u => u.Posts)

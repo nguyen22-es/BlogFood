@@ -10,7 +10,7 @@ namespace BlogFoodApi.Service
         List<TitleViewModel> titleViewModels();
 
         RequestPostViewModel GetContent(string PostID);
-        Task CreatePost(RequestPostViewModel requestPostViewModel);
+        Task CreatePost(RequestPostViewModel requestPostViewModel, string UserID);
 
         Task UpdatePost([FromBody] RequestPostViewModel requestPostViewModel);
 

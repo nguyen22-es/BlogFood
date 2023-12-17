@@ -1,5 +1,6 @@
 ﻿using Data.Data.Entities;
 using DataAccess;
+using DataAccess.Data.Entities;
 
 namespace BlogFoodApi.Repositories
 {
@@ -11,11 +12,12 @@ namespace BlogFoodApi.Repositories
             _manageAppDbContext = manageAppDbContex;
         }
 
-        public void CreateCategory(PostContent postContent)
+        public async Task  CreateCategory(PostCategory postContent)
         {
-            throw new NotImplementedException();
+            _manageAppDbContext.postCategories.Add(postContent);
+           await _manageAppDbContext.SaveChangesAsync();
+
+         
         }
-
-
     }
 }

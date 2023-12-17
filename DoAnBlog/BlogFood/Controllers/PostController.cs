@@ -53,11 +53,13 @@ namespace BlogFoodApi.Controllers
             return Ok(postContent);
         }
 
+
+
         // POST api/<PostController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] RequestPostViewModel requestPostViewModel)
+        public async Task<ActionResult> Post(string UserID,[FromBody] RequestPostViewModel requestPostViewModel)
         {
-          await  _postService.CreatePost(requestPostViewModel);
+          await  _postService.CreatePost(requestPostViewModel, UserID);
 
 
             return Ok();

@@ -1,13 +1,17 @@
-﻿namespace BlogFoodApi.ViewModel
+﻿using Data.Data.Entities;
+
+namespace BlogFoodApi.ViewModel
 {
     public class RequestPostViewModel
     {
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public string UserID { get; set; }
-        public string Date { get; set; }
-        public string NameFood { get; set; }
-        public string PostId { get; set; }
-        public string NameUser { get; set; }
+       public TitleViewModel Title { get; set; }
+
+        public string category { get; set; }
+       public string Content { get; set; }
+
+        public string CookingTime { get; set; }
+
+        public List<string> Ingredients { get; set; }   
+
     }
 }

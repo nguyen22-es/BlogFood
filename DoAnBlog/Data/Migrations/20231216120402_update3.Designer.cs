@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ManageAppDbContext))]
-    partial class ManageAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231216120402_update3")]
+    partial class update3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,12 +72,9 @@ namespace Data.Migrations
 
                     b.Property<string>("PostID")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("FoodID");
-
-                    b.HasIndex("PostID")
-                        .IsUnique();
 
                     b.ToTable("FoodIngredients", (string)null);
                 });
@@ -276,8 +276,9 @@ namespace Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<float?>("average")
-                        .HasColumnType("real");
+                    b.Property<string>("ratingID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PostId");
 
@@ -499,7 +500,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("DataAccess.Data.Entities.Post", "Post")
                         .WithOne()
-                        .HasForeignKey("Data.Data.Entities.FoodIngredient", "PostID")
+                        .HasForeignKey("Data.Data.Entities.FoodIngredient", "FoodID")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
