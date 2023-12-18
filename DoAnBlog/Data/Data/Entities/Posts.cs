@@ -19,7 +19,10 @@ namespace DataAccess.Data.Entities
         public float? average { get; set; }
 
         public int? Likes { get; set; }
-  
+
+        public string Thumbnail { get; set; }
+
+
         public virtual ICollection<RatingPost> ratingPost { get; set; }
         public virtual PostCategory PostCategories { get; set; }
         public virtual PostContent PostContent { get; set; }

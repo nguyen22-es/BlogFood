@@ -24,9 +24,7 @@ namespace API.SignalrHub
 
         public async Task TestMe(string someRandomText)
         {
-            await Clients.All.SendAsync(
-                $"{this.Context.User.Identity.Name} : {someRandomText}",
-                CancellationToken.None);
+          
         }
         public override async Task OnConnectedAsync()
         {

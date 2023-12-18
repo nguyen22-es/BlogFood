@@ -208,9 +208,10 @@ namespace Data.Migrations
                     PostId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     NameFood = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Likes = table.Column<int>(type: "int", nullable: true)
+                    average = table.Column<float>(type: "real", nullable: true),
+                    Likes = table.Column<int>(type: "int", nullable: true),
+                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -249,6 +250,24 @@ namespace Data.Migrations
                         principalTable: "Posts",
                         principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FoodIngredients",
+                columns: table => new
+                {
+                    FoodID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CookingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FoodIngredients", x => x.FoodID);
+                    table.ForeignKey(
+                        name: "FK_FoodIngredients_Posts_PostID",
+                        column: x => x.PostID,
+                        principalTable: "Posts",
+                        principalColumn: "PostId");
                 });
 
             migrationBuilder.CreateTable(
@@ -317,6 +336,49 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RatingPosts",
+                columns: table => new
+                {
+                    PostId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Evaluate = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RatingPosts", x => new { x.PostId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_RatingPosts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RatingPosts_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NameIngredient = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FoodIngredientId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Ingredients_FoodIngredients_FoodIngredientId",
+                        column: x => x.FoodIngredientId,
+                        principalTable: "FoodIngredients",
+                        principalColumn: "FoodID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -372,6 +434,17 @@ namespace Data.Migrations
                 column: "FollowingId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FoodIngredients_PostID",
+                table: "FoodIngredients",
+                column: "PostID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ingredients_FoodIngredientId",
+                table: "Ingredients",
+                column: "FoodIngredientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LikePosts_UserId",
                 table: "LikePosts",
                 column: "UserId");
@@ -397,6 +470,11 @@ namespace Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",
                 table: "Posts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RatingPosts_UserId",
+                table: "RatingPosts",
                 column: "UserId");
         }
 
@@ -425,6 +503,9 @@ namespace Data.Migrations
                 name: "Follows");
 
             migrationBuilder.DropTable(
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
                 name: "LikePosts");
 
             migrationBuilder.DropTable(
@@ -434,7 +515,13 @@ namespace Data.Migrations
                 name: "PostContents");
 
             migrationBuilder.DropTable(
+                name: "RatingPosts");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "FoodIngredients");
 
             migrationBuilder.DropTable(
                 name: "Categories");

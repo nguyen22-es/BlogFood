@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ManageAppDbContext))]
-    [Migration("20231209060658_migrations")]
+    [Migration("20231218083914_migrations")]
     partial class migrations
     {
         /// <inheritdoc />
@@ -61,6 +61,47 @@ namespace Data.Migrations
                     b.ToTable("Comments", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Data.Entities.FoodIngredient", b =>
+                {
+                    b.Property<string>("FoodID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CookingTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("FoodID");
+
+                    b.HasIndex("PostID")
+                        .IsUnique();
+
+                    b.ToTable("FoodIngredients", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Data.Entities.Ingredients", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FoodIngredientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("NameIngredient")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("FoodIngredientId");
+
+                    b.ToTable("Ingredients", (string)null);
+                });
+
             modelBuilder.Entity("Data.Data.Entities.PostContent", b =>
                 {
                     b.Property<string>("ContentPostID")
@@ -79,6 +120,24 @@ namespace Data.Migrations
                         .IsUnique();
 
                     b.ToTable("PostContents", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Data.Entities.RatingPost", b =>
+                {
+                    b.Property<string>("PostId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("Evaluate")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RatingPosts", (string)null);
                 });
 
             modelBuilder.Entity("DataAccess.Data.Entities.Category", b =>
@@ -213,16 +272,19 @@ namespace Data.Migrations
                     b.Property<int?>("Likes")
                         .HasColumnType("int");
 
-                    b.Property<string>("FoodID")
+                    b.Property<string>("NameFood")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameFood")
+                    b.Property<string>("Thumbnail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<float?>("average")
+                        .HasColumnType("real");
 
                     b.HasKey("PostId");
 
@@ -440,6 +502,28 @@ namespace Data.Migrations
                     b.Navigation("user");
                 });
 
+            modelBuilder.Entity("Data.Data.Entities.FoodIngredient", b =>
+                {
+                    b.HasOne("DataAccess.Data.Entities.Post", "Post")
+                        .WithOne()
+                        .HasForeignKey("Data.Data.Entities.FoodIngredient", "PostID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Data.Data.Entities.Ingredients", b =>
+                {
+                    b.HasOne("Data.Data.Entities.FoodIngredient", "FoodIngredient")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("FoodIngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FoodIngredient");
+                });
+
             modelBuilder.Entity("Data.Data.Entities.PostContent", b =>
                 {
                     b.HasOne("DataAccess.Data.Entities.Post", "Post")
@@ -449,6 +533,25 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("Data.Data.Entities.RatingPost", b =>
+                {
+                    b.HasOne("DataAccess.Data.Entities.Post", "Post")
+                        .WithMany("ratingPost")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Data.Entities.ManageUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DataAccess.Data.Entities.Follow", b =>
@@ -565,6 +668,11 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Data.Data.Entities.FoodIngredient", b =>
+                {
+                    b.Navigation("Ingredients");
+                });
+
             modelBuilder.Entity("DataAccess.Data.Entities.Category", b =>
                 {
                     b.Navigation("PostCategories");
@@ -586,6 +694,8 @@ namespace Data.Migrations
 
                     b.Navigation("PostContent")
                         .IsRequired();
+
+                    b.Navigation("ratingPost");
                 });
 #pragma warning restore 612, 618
         }

@@ -32,6 +32,8 @@ namespace DataAccess.Configurations
             builder.Property(p => p.average)
                 .IsRequired(false);
 
+            builder.Property(p => p.Thumbnail).IsRequired();
+
             builder.HasOne(p => p.User)
                 .WithMany(u => u.Posts)
                 .HasForeignKey(p => p.UserId)
