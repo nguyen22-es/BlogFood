@@ -33,7 +33,8 @@ namespace BlogFoodApi.Service
                 PostId = Guid.NewGuid().ToString(),
                 NameFood = requestPostViewModel.Title.NameFood,             
                 UserId = UserID,
-                DatePosted = DateTime.Now
+                DatePosted = DateTime.Now,
+                IsPosted = false
 
             };
 
@@ -95,6 +96,17 @@ namespace BlogFoodApi.Service
           
 
             return Request;
+        }
+
+        public List<TitleViewModel> PostTrue()
+        {
+            var title = postDbRepository.GetPostTrueTitle();
+
+            var titleSameViewModel = mapper.Map<List<Post>, List<TitleViewModel>>(title);
+
+
+
+            return titleSameViewModel;
         }
 
         public List<TitleViewModel> titleViewModels()

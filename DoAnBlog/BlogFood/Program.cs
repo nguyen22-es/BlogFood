@@ -4,6 +4,7 @@ using BlogFoodApi.Repositories;
 using BlogFoodApi.Service;
 using DataAccess;
 using DataAccess.Data.Entities;
+using DataAccess.SeedData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -120,6 +121,9 @@ builder.Services.AddAuthentication(options =>
 
 
 
+
+
+
 var app = builder.Build(); 
 
 // Configure the HTTP request pipeline.
@@ -127,6 +131,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    AppIdentityDbContextSeeder.SeedAsync(app);
 }
 app.UseRouting();
 app.UseHttpsRedirection();

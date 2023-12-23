@@ -38,6 +38,13 @@ namespace API.Repository
 
         }
 
+        public List<Post> GetPostTrueTitle()
+        {
+            var posts = _manageAppDbContext.Posts.Where(u => u.IsPosted == true).Include(p => p.User).OrderByDescending(x => x.DatePosted).ToList();
+
+            return posts;
+        }
+
         public List<RatingPost> getRating(string PostID)
         {
             var posts = _manageAppDbContext.ratingPosts.Where(n => n.PostId == PostID).ToList();

@@ -12,6 +12,7 @@ namespace API.Repository
         Post GetTitle(string PostID);
        Task CreatePosts(Post posts);
         List<Post> GetAllTitle();
+        List<Post> GetPostTrueTitle();
         Task DeletePosts(string id);
         Task UpdatePosts(Post  posts); // sửa post
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ManageAppDbContext))]
-    [Migration("20231218083914_migrations")]
-    partial class migrations
+    [Migration("20231223083413_update1")]
+    partial class update1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -269,6 +269,9 @@ namespace Data.Migrations
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool?>("IsPosted")
+                        .HasColumnType("bit");
+
                     b.Property<int?>("Likes")
                         .HasColumnType("int");
 
@@ -277,7 +280,6 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Thumbnail")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")

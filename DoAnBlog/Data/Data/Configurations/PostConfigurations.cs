@@ -31,8 +31,10 @@ namespace DataAccess.Configurations
 
             builder.Property(p => p.average)
                 .IsRequired(false);
+            builder.Property(p => p.IsPosted)
+                 .IsRequired(false);
 
-            builder.Property(p => p.Thumbnail).IsRequired();
+            builder.Property(p => p.Thumbnail).IsRequired(false);
 
             builder.HasOne(p => p.User)
                 .WithMany(u => u.Posts)

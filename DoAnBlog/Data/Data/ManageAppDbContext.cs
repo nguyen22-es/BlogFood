@@ -9,6 +9,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Data.Data.Entities;
+using System.Reflection.Emit;
+using DataAccess.SeedData;
 
 namespace DataAccess
 {
@@ -26,6 +28,9 @@ namespace DataAccess
 
             builder.Entity<IdentityRole>().Property(x => x.Id).HasMaxLength(50).IsRequired(true);
             builder.Entity<ManageUser>().Property(x => x.Id).HasMaxLength(50).IsRequired(true);
+
+          
+       
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 

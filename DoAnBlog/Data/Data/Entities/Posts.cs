@@ -18,6 +18,7 @@ namespace DataAccess.Data.Entities
 
         public float? average { get; set; }
 
+        public bool? IsPosted { get; set; }
         public int? Likes { get; set; }
 
         public string Thumbnail { get; set; }

@@ -8,6 +8,7 @@
         public string Date { get; set; }
         public string NameFood { get; set; }
         public int Rating { get; set; }
+        public string Thumbnail { get; set; }
 
     }
 }

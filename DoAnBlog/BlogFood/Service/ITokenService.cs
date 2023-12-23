@@ -10,7 +10,7 @@ namespace BlogFoodApi.Service
     {
         string GenerateRefreshToken();
 
-        Task<RefreshModel> GenerateJwt(ManageUser user);
+        Task<RefreshModel> GenerateJwt(ManageUser user, ICollection<string> Role);
 
 
         Task<ApiResponse> CheckTokenAsync(RefreshModel refreshModel);

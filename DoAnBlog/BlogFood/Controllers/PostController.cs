@@ -37,6 +37,18 @@ namespace BlogFoodApi.Controllers
 
             return Ok(Post);
         }
+        [HttpGet("PostTrue")]
+        public async Task<ActionResult<IEnumerable<TitleViewModel>>> GetIsTrue() 
+        {
+
+
+            var Post = _postService.PostTrue();
+
+            if (Post == null)
+                return BadRequest("khong có bài viết hoặc lỗi khi lấy bài viết");
+
+            return Ok(Post);
+        }
 
         // GET api/<PostController>/5
         [HttpGet("{PostID}")]

@@ -3,6 +3,7 @@ using DataAccess;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,13 +17,15 @@ namespace BlogFoodApi.Service
         private readonly IConfiguration _configuration;
         private readonly ManageAppDbContext manageAppDbContext;
         private readonly UserManager<ManageUser> _manageUser;
-   
-        public TokenService(IConfiguration configuration, ManageAppDbContext manageAppDbContext, UserManager<ManageUser> manageUser)
+        private readonly RoleManager<IdentityRole> roleManager;
+
+        public TokenService(RoleManager<IdentityRole> roleManager,IConfiguration configuration, ManageAppDbContext manageAppDbContext, UserManager<ManageUser> manageUser)
         {
 
             _configuration = configuration;
             this.manageAppDbContext = manageAppDbContext;
             _manageUser = manageUser;
+            this.roleManager = roleManager;
         }
 
    
@@ -113,8 +116,9 @@ namespace BlogFoodApi.Service
 
                 //create new token
                 var user = await _manageUser.FindByIdAsync(ID);
-               
-                Task<RefreshModel> token = GenerateJwt(user);
+                var userRoles = await _manageUser.GetRolesAsync(user);
+
+                Task<RefreshModel> token = GenerateJwt(user, userRoles);
 
 
                 RefreshModel resultToken = token.Result;
@@ -142,7 +146,7 @@ namespace BlogFoodApi.Service
         }
 
 
-        public async Task<RefreshModel> GenerateJwt(ManageUser userName)
+        public async Task<RefreshModel> GenerateJwt(ManageUser userName, ICollection<string> Role)
         {
          
             var authClaims = new List<Claim>
@@ -152,7 +156,16 @@ namespace BlogFoodApi.Service
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
               //  new Claim(JwtRegisteredClaimNames.Email, userName.Email),
                 new Claim(JwtRegisteredClaimNames.Sub, userName.UserName),
+
+                           
             };
+
+            foreach(var item in Role)
+            {
+                var role = new Claim(ClaimTypes.Role, item);
+
+                authClaims.Add(role);
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration["JWT:Secret"] ?? throw new InvalidOperationException("Secret not configured")));

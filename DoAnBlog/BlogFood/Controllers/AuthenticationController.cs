@@ -21,13 +21,15 @@ namespace BlogFood.Controllers
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationController> _logger;
         private readonly ITokenService _tokenService;
+        private readonly RoleManager<IdentityRole> roleManager;
 
-        public AuthenticationController(UserManager<ManageUser> userManager, IConfiguration configuration, ILogger<AuthenticationController> logger, ITokenService tokenService)
+        public AuthenticationController(RoleManager<IdentityRole> roleManager,UserManager<ManageUser> userManager, IConfiguration configuration, ILogger<AuthenticationController> logger, ITokenService tokenService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _logger = logger;
             _tokenService = tokenService;
+            this.roleManager = roleManager;
         }
 
         [HttpPost("Register")]
@@ -46,7 +48,9 @@ namespace BlogFood.Controllers
             var newUser = new ManageUser
             {
                 UserName = model.UserName,
-                DisplayName = model.UserName,            
+                DisplayName = model.UserName,  
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber
 
             };
 
@@ -54,6 +58,12 @@ namespace BlogFood.Controllers
 
             if (result.Succeeded)
             {
+                var roleExist = await roleManager.RoleExistsAsync("User");
+                if (!roleExist)
+                {
+                    await roleManager.CreateAsync(new IdentityRole("User"));
+                }
+                await _userManager.AddToRoleAsync(newUser, "User");
                 _logger.LogInformation("Register succeeded");
 
                 return Ok("User successfully created");
@@ -69,11 +79,12 @@ namespace BlogFood.Controllers
             _logger.LogInformation("Login called");
 
             var user = await _userManager.FindByNameAsync(model.Username);
+            var userRoles = await _userManager.GetRolesAsync(user);
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
                 return Unauthorized();
 
-            var Token = _tokenService.GenerateJwt(user);
+            var Token = _tokenService.GenerateJwt(user, userRoles);
             var refreshModel = new RefreshModel();
 
             refreshModel.RefreshToken = Token.Result.RefreshToken;

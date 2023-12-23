@@ -211,7 +211,7 @@ namespace Data.Migrations
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
                     average = table.Column<float>(type: "real", nullable: true),
                     Likes = table.Column<int>(type: "int", nullable: true),
-                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
