@@ -1,8 +1,10 @@
 ﻿using BlogFoodApi.Service;
 using BlogFoodApi.ViewModel;
+using DataAccess;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,12 +18,12 @@ namespace BlogFoodApi.Controllers
     {
         public readonly UserManager<ManageUser> manageUser;
         private readonly IPostService _postService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public PostController(IHttpContextAccessor httpContextAccessor,IPostService postService, UserManager<ManageUser> manageUser)
+        private readonly ManageAppDbContext  manageAppDbContext;
+        public PostController(ManageAppDbContext manageAppDbContext, IPostService postService, UserManager<ManageUser> manageUser)
         {
             _postService = postService;
             this.manageUser = manageUser;
-            _httpContextAccessor = httpContextAccessor;
+            this.manageAppDbContext = manageAppDbContext;
         }
 
         // GET: api/<PostController>
@@ -86,6 +88,22 @@ namespace BlogFoodApi.Controllers
             return Ok();
 
         }
+
+
+        [HttpPut()]
+        public async Task<ActionResult> PutChage([FromBody] bool IsPost,string PostID)
+        {
+            var Post = await manageAppDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == PostID);
+
+            Post.IsPosted = IsPost;
+
+            await manageAppDbContext.SaveChangesAsync();
+
+            return Ok();
+
+        }
+
+
 
         // DELETE api/<PostController>/5
         [HttpDelete("{id}")]

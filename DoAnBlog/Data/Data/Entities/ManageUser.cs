@@ -17,6 +17,7 @@ namespace DataAccess.Data.Entities
         public virtual ICollection<Follow> FollowFollowings { get; set; } = new List<Follow>();
 
         public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+
        
     }
 }
