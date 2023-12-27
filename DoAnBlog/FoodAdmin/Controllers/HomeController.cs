@@ -29,7 +29,7 @@ namespace FoodAdmin.Controllers
         }
         public ActionResult Create(string textarea)
         {
-            return View(textarea);
+            return View();
 
         }
 

@@ -28,8 +28,7 @@ using System.Threading.Tasks;
                 "BanUser"
                 
                 };
-               
-                    var defaultUser = new ManageUser { DisplayName = "vanSon", UserName = "SON", Email = "KientrucHaNoi@gmail.com" };
+                var defaultUser = new ManageUser { DisplayName = "vanSon", UserName = "SON", Email = "KientrucHaNoi@gmail.com" };
                     if ((await userManager.FindByNameAsync("SON")) == null)
                     {
                         await userManager.CreateAsync(defaultUser, "Pass@word1");

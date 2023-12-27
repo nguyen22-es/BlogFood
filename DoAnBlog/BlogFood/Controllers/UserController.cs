@@ -1,6 +1,7 @@
 ﻿using BlogFood.Controllers;
 using BlogFoodApi.Service;
 using BlogFoodApi.ViewModel;
+using DataAccess;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,16 @@ namespace BlogFoodApi.Controllers
     public class UserController : Controller
     {
         private readonly UserManager<ManageUser> _userManager;
-        private readonly IConfiguration _configuration;
+        private readonly ManageAppDbContext  _manageAppDbContext;
         private readonly ILogger<UserController> _logger;
         private readonly ITokenService _tokenService;
         private readonly RoleManager<IdentityRole> roleManager;
       
 
-        public UserController(RoleManager<IdentityRole> roleManager, UserManager<ManageUser> userManager, IConfiguration configuration, ILogger<UserController> logger, ITokenService tokenService)
+        public UserController(RoleManager<IdentityRole> roleManager, UserManager<ManageUser> userManager, ManageAppDbContext manageAppDbContext, ILogger<UserController> logger, ITokenService tokenService)
         {
             _userManager = userManager;
-            _configuration = configuration;
+            _manageAppDbContext = manageAppDbContext;
             _logger = logger;
             _tokenService = tokenService;
             this.roleManager = roleManager;
@@ -36,27 +37,69 @@ namespace BlogFoodApi.Controllers
 
             return Ok(usersInRole);
         }
-
-        // GET api/<CommentController>/5
-       /* [HttpGet("{Depth}")]
-        public async Task<ActionResult<IEnumerable<CommentViewModel>>> Get(int Depth, string CommentParentsID) // lấy những comment con sau đấy
-        {
-            var CommentDepth = commentService.GetCommentDepth(Depth, CommentParentsID);
-
-            return Ok(CommentDepth);
-        }
-
-
-        // PUT api/<CommentController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult> PutAsync(string id, [FromBody] int value)
         {
-        }
+            var user = await _userManager.FindByIdAsync(id);
 
-        // DELETE api/<CommentController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }*/
+            if (user == null)
+            {
+                // Xử lý người dùng không tồn tại
+                return NotFound();
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+            // Xóa người dùng khỏi tất cả các vai trò hiện tại
+            var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, userRoles);
+
+            if (!removeRolesResult.Succeeded)
+            {
+                // Xử lý khi có lỗi xảy ra khi xóa vai trò
+                return NotFound("Error");
+            }
+
+            // Thêm người dùng vào vai trò mới
+           
+
+            if (value == 0)
+            {
+              
+                await _userManager.AddToRoleAsync(user, "User");
+                return Ok();
+            }
+            else
+            {
+                
+              await _userManager.AddToRoleAsync(user, "BanUser");
+                return Ok();
+            }
+
+
+
+           
+        }
+       
+        // GET api/<CommentController>/5
+        /* [HttpGet("{Depth}")]
+         public async Task<ActionResult<IEnumerable<CommentViewModel>>> Get(int Depth, string CommentParentsID) // lấy những comment con sau đấy
+         {
+             var CommentDepth = commentService.GetCommentDepth(Depth, CommentParentsID);
+
+             return Ok(CommentDepth);
+         }
+
+
+
+         [HttpPut("{id}")]
+         public void Put(int id, [FromBody] string value)
+         {
+         }
+
+         // DELETE api/<CommentController>/5
+         [HttpDelete("{id}")]
+         public void Delete(int id)
+         {
+         }*/
     }
 }
