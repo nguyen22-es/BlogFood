@@ -23,7 +23,7 @@ namespace DataAccess.Data.Entities
 
         public string Thumbnail { get; set; }
 
-
+        public string Description { get; set; }
         public virtual ICollection<RatingPost> ratingPost { get; set; }
         public virtual PostCategory PostCategories { get; set; }
         public virtual PostContent PostContent { get; set; }

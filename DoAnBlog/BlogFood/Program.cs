@@ -115,7 +115,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()  // Đặt cụm từ khóa allowCredentials
+            .WithOrigins("http://127.0.0.1:8000")
+            ); // Thay đổi đúng theo origin của bạn
+});
 
 
 
@@ -134,7 +143,8 @@ if (app.Environment.IsDevelopment())
     AppIdentityDbContextSeeder.SeedAsync(app);
 }
 app.UseRouting();
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); app.UseCors("CorsPolicy");
+
 
 app.UseAuthorization();
 

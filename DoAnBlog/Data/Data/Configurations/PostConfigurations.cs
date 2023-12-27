@@ -20,8 +20,10 @@ namespace DataAccess.Configurations
  
 
             builder.Property(p => p.NameFood)
-                .IsRequired(); 
+                .IsRequired();
 
+            builder.Property(p => p.Description)
+               .IsRequired(false);
 
             builder.Property(p => p.DatePosted)
                 .IsRequired(); 
