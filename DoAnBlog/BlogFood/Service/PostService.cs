@@ -36,6 +36,8 @@ namespace BlogFoodApi.Service
                 NameFood = requestPostViewModel.Title.NameFood,             
                 UserId = UserID,
                 DatePosted = DateTime.Now,
+                Thumbnail = requestPostViewModel.Title.Thumbnail,
+                Description = requestPostViewModel.Title.Description,
                 IsPosted = false
 
             };
