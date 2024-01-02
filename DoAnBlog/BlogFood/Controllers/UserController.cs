@@ -31,14 +31,31 @@ namespace BlogFoodApi.Controllers
         [HttpGet]
         public async Task<ActionResult> Get() 
         {
-            var usersInRole = await _userManager.Users.ToListAsync();
+            var list = new List<changeRole>();
 
-      
+            var usersInRole = await _userManager.GetUsersInRoleAsync("User");
+            foreach (var item in usersInRole)
+            {
+                var l = new changeRole { displayName = item.DisplayName,email = item.Email,phoneNumber = item.PhoneNumber,Role = 1 };
 
-            return Ok(usersInRole);
+                list.Add(l);
+            }
+            var banInRole = await _userManager.GetUsersInRoleAsync("BanUser");
+            foreach (var item in banInRole)
+            {
+                var l = new changeRole { displayName = item.DisplayName, email = item.Email, phoneNumber = item.PhoneNumber, Role = 0 };
+
+                list.Add(l);
+            }
+
+
+
+
+
+            return Ok(list);
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> PutAsync(string id, [FromBody] int value)
+        public async Task<ActionResult> PutAsync(string id,  int value)
         {
             var user = await _userManager.FindByIdAsync(id);
 

@@ -103,7 +103,7 @@ namespace BlogFoodApi.Controllers
 
 
         [HttpPut()]
-        public async Task<ActionResult> PutChage([FromBody] string PostID)
+        public async Task<ActionResult> PutChage( string PostID)
         {
             var Post = await manageAppDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == PostID);
 
