@@ -4,5 +4,6 @@
     {
         void Follow(string Follower,string Following);
         void UnFollow(string Follower, string Following);
+        bool IsFollow(string Follower, string Following);
     }
 }

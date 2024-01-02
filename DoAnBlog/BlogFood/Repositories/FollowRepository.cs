@@ -38,5 +38,13 @@ namespace API.Repository
             _manageAppDbContext.follows.Remove(down);
 
         }
+
+        public bool IsFollow(string Follower, string Following)
+        {
+            var Follow = _manageAppDbContext.follows.FirstOrDefault(c => c.FollowerId == Follower && c.FollowingId == Following);
+            if (Follow != null) return true;
+
+            return false;
+        }
     }
 }

@@ -8,5 +8,7 @@ namespace API.Repository
 
         void DeletePostLike(string UserLike, string PostID);
 
+        bool IsLike(string UserLike, string PostID);
+
     }
 }

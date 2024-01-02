@@ -1,6 +1,7 @@
 ﻿using Data.Data.Entities;
 using DataAccess;
 using DataAccess.Data.Entities;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository
@@ -8,6 +9,7 @@ namespace API.Repository
     public class PostRepository : IPostDbRepository
     {
         private readonly ManageAppDbContext _manageAppDbContext;
+       
         public PostRepository(ManageAppDbContext manageAppDbContext)
         {
 

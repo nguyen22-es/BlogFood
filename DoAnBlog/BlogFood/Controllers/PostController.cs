@@ -51,6 +51,18 @@ namespace BlogFoodApi.Controllers
 
             return Ok(Post);
         }
+        [HttpGet("CoutLike")]
+        public async Task<ActionResult> GetCoutLike(string PostID)
+        {
+
+
+            var postContent = _postService.GetContent(PostID);
+
+            if (postContent == null)
+                return BadRequest("khong có bài viết hoặc lỗi khi lấy bài viết");
+
+            return Ok(postContent.Title.Like);
+        }
 
         // GET api/<PostController>/5
         [HttpGet("{PostID}")]
@@ -91,11 +103,11 @@ namespace BlogFoodApi.Controllers
 
 
         [HttpPut()]
-        public async Task<ActionResult> PutChage([FromBody] bool IsPost,string PostID)
+        public async Task<ActionResult> PutChage([FromBody] string PostID)
         {
             var Post = await manageAppDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == PostID);
 
-            Post.IsPosted = IsPost;
+            Post.IsPosted = true;
 
             await manageAppDbContext.SaveChangesAsync();
 

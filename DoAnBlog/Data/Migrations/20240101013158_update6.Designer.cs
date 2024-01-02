@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ManageAppDbContext))]
-    [Migration("20231218105858_migrations")]
-    partial class migrations
+    [Migration("20240101013158_update6")]
+    partial class update6
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,6 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CommentFatherID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Content")
@@ -40,6 +39,11 @@ namespace Data.Migrations
 
                     b.Property<int>("Depth")
                         .HasColumnType("int");
+
+                    b.Property<bool?>("IsChild")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("PostID")
                         .IsRequired()
@@ -268,6 +272,12 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsPosted")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("Likes")
                         .HasColumnType("int");

@@ -8,7 +8,8 @@
         public string nameComment { get; set; }
 
         public string TimeComment { get; set; }
-
+        public int? CoutChild { get; set; }
+        public string Avatar { get; set; }
         public string CommentParentsID { get; set; }
 
     }

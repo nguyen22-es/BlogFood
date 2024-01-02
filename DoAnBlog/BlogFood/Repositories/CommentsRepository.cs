@@ -45,7 +45,12 @@ namespace API.Repository
 
         public List<Comment> GetAllCommentsParents(string postId)
         {
-            var foundComment =  _manageAppDbContext.comments.Where(c => c.PostID == postId && c.Depth == 0).OrderByDescending(c => c.timeComment).ToList();
+            var foundComment =  _manageAppDbContext.comments.Include(f => f.user).Where(c => c.PostID == postId && c.Depth == 0).OrderByDescending(c => c.timeComment).ToList();
+
+            if (foundComment != null)
+            {
+                return foundComment;
+            }
 
             return foundComment;
         }

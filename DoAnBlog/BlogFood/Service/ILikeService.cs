@@ -4,5 +4,7 @@
     {
         void Like(string userLike, string PostID);
         void Unlike(string userLike, string PostID);
+
+        bool IsLike(string userLike, string PostID);
     }
 }

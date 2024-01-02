@@ -35,6 +35,7 @@ namespace BlogFoodApi.Service
                 PostId = Guid.NewGuid().ToString(),
                 NameFood = requestPostViewModel.Title.NameFood,             
                 UserId = UserID,
+                Likes = 0,
                 DatePosted = DateTime.Now,
                 Thumbnail = requestPostViewModel.Title.Thumbnail,
                 Description = requestPostViewModel.Title.Description,

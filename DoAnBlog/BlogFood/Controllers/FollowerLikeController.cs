@@ -1,7 +1,9 @@
-﻿using BlogFoodApi.Service;
+﻿using API.SignalrHub;
+using BlogFoodApi.Service;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,18 +16,18 @@ namespace BlogFoodApi.Controllers
         public readonly ILikeService likeService;
         public readonly IFollowService followService;
         public readonly UserManager< ManageUser> manageUser;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public FollowerLikeController(IHttpContextAccessor httpContextAccessor,ILikeService likeService, IFollowService followService, UserManager<ManageUser> manageUser) 
+        private readonly IHubContext<ChatHub>  _hubContext;
+        public FollowerLikeController(IHubContext<ChatHub> hubContex, ILikeService likeService, IFollowService followService, UserManager<ManageUser> manageUser) 
         {
             this.likeService = likeService;
             this.followService = followService;
             this.manageUser = manageUser;
-            _httpContextAccessor = httpContextAccessor;
+            _hubContext = hubContex;
         }
         // GET: api/<FollowerLikeController>
     
         [HttpDelete("unlike")]
-        public async Task<ActionResult> DeleteLike(string UserLike, string PostID)
+        public async Task<ActionResult> DeleteLike(string UserLike, string PostID) // unlike
         {
             likeService.Unlike(UserLike, PostID);
 
@@ -33,14 +35,26 @@ namespace BlogFoodApi.Controllers
         }
 
         // POST api/<FollowerLikeController>
-        [HttpGet("like")]
-        public async Task<ActionResult> GetLike( string UserLike,string PostID)
+        [HttpPost("like")]
+        public async Task<ActionResult> Like( string UserLike,string PostID) // like post
         {
 
             likeService.Like(UserLike, PostID);
 
             return Ok();
         }
+        [HttpGet]
+        public async Task<ActionResult<bool>> GetLike(string UserLike, string PostID) // like ? true : false
+        {
+
+          var isLike =   likeService.IsLike(UserLike, PostID);
+
+            return Ok(isLike);
+        }
+
+
+
+
 
         [HttpDelete("unfollow")]
         public async Task<ActionResult> DeleteFl(string Follower, string Followin)
@@ -51,15 +65,22 @@ namespace BlogFoodApi.Controllers
         }
 
         // POST api/<FollowerLikeController>
-        [HttpGet("follow")]
-        public async Task<ActionResult> GetFl(string Follower, string Followin)
+        [HttpPost("follow")]
+        public async Task<ActionResult> Follow(string Follower, string Followin)
         {
 
             followService.Follow(Follower, Followin);
 
             return Ok();
         }
+        [HttpGet("follow")]
+        public async Task<ActionResult<bool>> GetFollow(string UserLike, string PostID) // like ? true : false
+        {
 
+            var isLike = followService.IsFollow(UserLike, PostID);
+
+            return Ok(isLike);
+        }
 
 
     }

@@ -13,7 +13,7 @@ namespace Data.Data.Entities
         public DateTime timeComment { get;set; }
 
         public int Depth { get; set; }
-
+        public int? CoutChild { get; set; }
         public string CommentFatherID { get; set; }
 
         public ManageUser user { get; set; }

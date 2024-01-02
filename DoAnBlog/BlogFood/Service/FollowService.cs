@@ -1,4 +1,5 @@
 ﻿using API.Repository;
+using DataAccess.Data.Entities;
 
 namespace BlogFoodApi.Service
 {
@@ -14,6 +15,12 @@ namespace BlogFoodApi.Service
         public void Follow(string Follower, string Following)
         {
             followDbRepository.CreatFollow(Follower, Following);
+        }
+
+        public bool IsFollow(string Follower, string Following)
+        {
+            var IsFollow = followDbRepository.IsFollow(Follower, Following);
+            return IsFollow;
         }
 
         public void UnFollow(string Follower, string Following)

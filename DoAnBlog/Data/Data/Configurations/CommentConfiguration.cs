@@ -25,8 +25,11 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
      .IsRequired();
 
         builder.Property(c => c.CommentFatherID)
-    .IsRequired();
-
+        .IsRequired(false);
+        // public bool IsChild { get; set; }
+        builder.Property(c => c.CoutChild)
+        .HasDefaultValue(0) // Đặt giá trị mặc định là false
+        .IsRequired(false);
 
         builder.HasOne(r => r.Post)
           .WithMany()

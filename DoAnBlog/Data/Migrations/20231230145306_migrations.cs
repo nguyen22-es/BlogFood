@@ -210,8 +210,10 @@ namespace Data.Migrations
                     NameFood = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
                     average = table.Column<float>(type: "real", nullable: true),
+                    IsPosted = table.Column<bool>(type: "bit", nullable: true),
                     Likes = table.Column<int>(type: "int", nullable: true),
-                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -234,7 +236,7 @@ namespace Data.Migrations
                     PostID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     timeComment = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Depth = table.Column<int>(type: "int", nullable: false),
-                    CommentFatherID = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CommentFatherID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
