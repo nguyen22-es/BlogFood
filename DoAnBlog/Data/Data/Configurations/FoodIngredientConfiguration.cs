@@ -24,7 +24,7 @@ namespace Data.Data.Configurations
             builder.HasOne(lp => lp.Post)
             .WithOne()
             .HasForeignKey<FoodIngredient>(lp => lp.PostID)
-             .OnDelete(DeleteBehavior.NoAction);
+             .OnDelete(DeleteBehavior.Cascade);
 
 
         }

@@ -141,7 +141,7 @@ namespace BlogFoodApi.Controllers
 
 
         // DELETE api/<PostController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<ActionResult> Delete(string PostID)
         {
             await _postService.DeletePost(PostID);

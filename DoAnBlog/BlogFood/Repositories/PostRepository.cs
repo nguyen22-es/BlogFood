@@ -85,6 +85,7 @@ namespace API.Repository
 
 
              _manageAppDbContext.Posts.Remove(posts);
+            await _manageAppDbContext.SaveChangesAsync();
         }
     }
 }
