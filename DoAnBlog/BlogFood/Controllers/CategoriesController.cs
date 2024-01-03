@@ -37,6 +37,7 @@ namespace BlogFoodApi.Controllers
             foreach (var item in categories)
             {
                 var cate = new CategoryViewModel();
+                cate.Id = item.CategoryId;
                 cate.nameCategory = item.FoodType;
                 list.Add(cate);
             }

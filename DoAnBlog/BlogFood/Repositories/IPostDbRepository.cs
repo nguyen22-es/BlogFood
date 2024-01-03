@@ -7,6 +7,7 @@ namespace API.Repository
 {
     public interface IPostDbRepository
     {
+        List<Post> GetPostUser(string UserId);
         List<RatingPost> getRating(string PostID);
         FoodIngredient GetFood(string post);
         Post GetTitle(string PostID);

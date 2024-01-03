@@ -47,6 +47,13 @@ namespace API.Repository
             return posts;
         }
 
+        public List<Post> GetPostUser(string UserId)
+        {
+            var posts = _manageAppDbContext.Posts.Where(u => u.UserId == UserId).Include(p => p.User).OrderByDescending(x => x.DatePosted).ToList();
+
+            return posts;
+        }
+
         public List<RatingPost> getRating(string PostID)
         {
             var posts = _manageAppDbContext.ratingPosts.Where(n => n.PostId == PostID).ToList();

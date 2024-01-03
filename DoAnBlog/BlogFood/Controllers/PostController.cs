@@ -39,6 +39,23 @@ namespace BlogFoodApi.Controllers
 
             return Ok(Post);
         }
+
+        [HttpGet("PostUser")]
+        public async Task<ActionResult<IEnumerable<TitleViewModel>>> GetPostUser(string UserId) // lấy tát cả những bài viết của mình
+        {
+
+
+            var Post = _postService.titleViewModels();
+
+            if (Post == null)
+                return BadRequest("khong có bài viết hoặc lỗi khi lấy bài viết");
+
+            return Ok(Post);
+        }
+
+
+
+
         [HttpGet("PostTrue")]
         public async Task<ActionResult<IEnumerable<TitleViewModel>>> GetIsTrue() 
         {
@@ -102,7 +119,7 @@ namespace BlogFoodApi.Controllers
         }
 
 
-        [HttpPut()]
+        [HttpPut]
         public async Task<ActionResult> PutChage( string PostID)
         {
             var Post = await manageAppDbContext.Posts.FirstOrDefaultAsync(p => p.PostId == PostID);

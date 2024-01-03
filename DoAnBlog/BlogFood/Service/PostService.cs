@@ -103,6 +103,17 @@ namespace BlogFoodApi.Service
             return Request;
         }
 
+        public List<TitleViewModel> GetPostUser(string UserId)
+        {
+            var title = postDbRepository.GetPostUser(UserId);
+
+            var titleSameViewModel = mapper.Map<List<Post>, List<TitleViewModel>>(title);
+
+
+
+            return titleSameViewModel;
+        }
+
         public List<TitleViewModel> PostTrue()
         {
             var title = postDbRepository.GetPostTrueTitle();

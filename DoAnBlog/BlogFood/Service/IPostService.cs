@@ -8,6 +8,9 @@ namespace BlogFoodApi.Service
     public interface IPostService
     {
         List<TitleViewModel> titleViewModels();
+
+        List<TitleViewModel> GetPostUser(string UserID);
+
         List<TitleViewModel> PostTrue();
         RequestPostViewModel GetContent(string PostID);
         Task CreatePost(RequestPostViewModel requestPostViewModel, string UserID);

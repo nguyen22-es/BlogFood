@@ -48,12 +48,9 @@ namespace BlogFoodApi.Controllers
                 list.Add(l);
             }
 
-
-
-
-
             return Ok(list);
         }
+
         [HttpPut("{id}")]
         public async Task<ActionResult> PutAsync(string id,  int value)
         {
