@@ -81,10 +81,17 @@ namespace BlogFoodApi.Service
             var title = postDbRepository.GetTitle(PostID);
             var Food = postDbRepository.GetFood(PostID);
             var Ingredients = new List<string>();
-            foreach (var item in Food.Ingredients)
-            {
 
-                Ingredients.Add(item.NameIngredient);
+           
+            if (Food != null) {
+                foreach (var item in Food.Ingredients)
+                {
+
+                    Ingredients.Add(item.NameIngredient);
+                }
+            }
+            {
+                Ingredients.Add("không có nguyên liệu");
             }
 
             var titleViewModel = mapper.Map<Post, TitleViewModel>(title);

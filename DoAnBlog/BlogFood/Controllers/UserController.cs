@@ -93,7 +93,23 @@ namespace BlogFoodApi.Controllers
 
            
         }
+
+
+        [HttpGet("user")]
+        public async Task<ActionResult<IEnumerable<CommentViewModel>>> GetUser(string User) // lấy những comment con sau đấy
+        {
+            var user  = await _userManager.FindByIdAsync(User);
+
        
+
+            var UserViewmodel = new changeRole { displayName = user.DisplayName, email = user.Email, phoneNumber = user.PhoneNumber, Role = 1 };
+
+
+            return Ok(UserViewmodel);
+        }
+
+
+
         // GET api/<CommentController>/5
         /* [HttpGet("{Depth}")]
          public async Task<ActionResult<IEnumerable<CommentViewModel>>> Get(int Depth, string CommentParentsID) // lấy những comment con sau đấy

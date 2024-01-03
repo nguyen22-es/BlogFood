@@ -41,16 +41,22 @@ namespace BlogFoodApi.Controllers
         }
 
         [HttpGet("PostUser")]
-        public async Task<ActionResult<IEnumerable<TitleViewModel>>> GetPostUser(string UserId) // lấy tát cả những bài viết của mình
+        public async Task<ActionResult<IEnumerable<ProfileViewModel>>> GetPostUser(string UserId) // lấy tát cả những bài viết của mình
         {
-
-
-            var Post = _postService.titleViewModels();
-
+            var profile = new ProfileViewModel();
+            var user = await manageUser.FindByIdAsync(UserId);
+            var role = await manageUser.IsInRoleAsync(user, "User");
+            
+            var UserViewmodel = new changeRole { displayName = user.DisplayName, email = user.Email, phoneNumber = user.PhoneNumber, Role = role== true ? 1 : 0 };
+            profile.changeRole = UserViewmodel;
+           
+            var Post = _postService.GetPostUser(UserId);
             if (Post == null)
                 return BadRequest("khong có bài viết hoặc lỗi khi lấy bài viết");
 
-            return Ok(Post);
+            profile.TitleViewModel = Post;
+
+            return Ok(profile);
         }
 
 
