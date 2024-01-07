@@ -1,5 +1,8 @@
 ﻿
+using API.Repository;
+using AutoMapper;
 using BlogFoodApi.ViewModel;
+using Data.Data.Entities;
 using DataAccess.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -10,77 +13,52 @@ using Microsoft.AspNetCore.SignalR;
 namespace API.SignalrHub
 {
 
-    [Authorize]
+
     public class ChatHub : Hub
     {
         public readonly static List<UserViewModel> _Connections = new List<UserViewModel>();
         private readonly static Dictionary<string, string> _ConnectionsMap = new Dictionary<string, string>();
-        private readonly UserManager<ManageUser> _userManager;
-        public ChatHub(UserManager<ManageUser> userManager)
+        private readonly IMapper _mapper;
+        public readonly UserManager<ManageUser> _userManager;
+        public readonly ICommentsDbRepository commentsDbRepository;
+        public ChatHub(UserManager<ManageUser> userManager, ICommentsDbRepository commentsDbRepository,IMapper mappe)
         {
-
+            this.commentsDbRepository = commentsDbRepository;
             _userManager = userManager;
+            _mapper = mappe;
+
         }
 
-        public async Task TestMe(string someRandomText)
+        public async Task creatCommentt(string conten,string PostID,int depth,string CommentFatherID,string UserId)
         {
-          
+            
+            var comment = new Comment
+            {
+                CommentID = Guid.NewGuid().ToString(),
+                timeComment = DateTime.Now,
+                CommentFatherID = CommentFatherID == "0" ? null: CommentFatherID,
+                Content = conten,
+                PostID = PostID,
+                Depth = depth,
+                UserID = UserId
+
+            };
+
+         var Comment = await  commentsDbRepository.CreateCommentAsync(comment);
+
+          var commentView = _mapper.Map<Comment,CommentViewModel>(Comment);
+
+            await Clients.All.SendAsync("newComment", commentView);
         }
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("getProfileInfo", "khong cos");
-            try
-            {
-                if (Context.User.Identity.IsAuthenticated)
-                {
-                    var user = await _userManager.GetUserAsync(Context.User);
+           
 
-                    var userViewModel = new UserViewModel
-                    {
-                        DisplayName = user.DisplayName,
-                        UserName = user.UserName
-
-                    };
-
-                    if (user != null)
-                    {
-                        
-                      
-
-                        if (!_Connections.Any(u => u.UserName == user.UserName) && !_ConnectionsMap.Any(u => u.Key == user.Id))
-                        {
-                            _Connections.Add(userViewModel);
-                            _ConnectionsMap.Add(user.Id, Context.ConnectionId);
-                        }
-
-                        await Clients.Caller.SendAsync("getProfileInfo",  user.DisplayName, user.Id);
-                    }
-                    else
-                    {
-                        await Clients.Caller.SendAsync("onError", "User not found");
-                    }
-                }
-                else
-                {
-                    await Clients.Caller.SendAsync("onError", "User not authenticated");
-                    // Handle the case where the user is not authenticated
-                }
-            }
-            catch (Exception ex)
-            {
-                await Clients.Caller.SendAsync("onError", "OnConnected:" + ex.Message);
-            }
-
+         await Clients.Caller.SendAsync("getProfileInfo");
+                   
             await base.OnConnectedAsync();
         }
-        private string GetDevice()
-         {
-             var device = Context.GetHttpContext().Request.Headers["Device"].ToString();
-             if (!string.IsNullOrEmpty(device) && (device.Equals("Desktop") || device.Equals("Mobile")))
-                 return device;
 
-             return "Web";
-         }
 
      }
 }

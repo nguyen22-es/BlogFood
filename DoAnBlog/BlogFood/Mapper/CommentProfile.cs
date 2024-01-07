@@ -15,7 +15,6 @@ namespace BlogFoodApi.Mapper
                 .ForMember(dst => dst.Depth, opt => opt.MapFrom(x => x.Depth))
                 .ForMember(dst => dst.Content, opt => opt.MapFrom(x => x.Content))
                 .ForMember(dst => dst.CoutChild, opt => opt.MapFrom(x => x.CoutChild))
-                .ForMember(dst => dst.Avatar, opt => opt.MapFrom(x => x.user.UserName))
                 .ForMember(dst => dst.CommentParentsID, opt => opt.MapFrom(x => x.CommentFatherID == null ? "0" : x.CommentFatherID))
                 .ForMember(dst => dst.TimeComment, opt => opt.MapFrom(x => x.timeComment.ToString("dd / MM / yy")));
             CreateMap<CommentViewModel, Comment>();

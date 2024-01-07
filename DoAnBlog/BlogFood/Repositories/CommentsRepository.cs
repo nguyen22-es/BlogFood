@@ -20,7 +20,7 @@ namespace API.Repository
             _manageAppDbContext.comments.Add(comment);
             await _manageAppDbContext.SaveChangesAsync();
 
-            // Tìm kiếm Comment sau khi đã lưu vào cơ sở dữ liệu
+         
             var foundComment = await _manageAppDbContext.comments.FindAsync(comment.CommentID);
             return foundComment;
         }

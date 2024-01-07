@@ -81,29 +81,33 @@ namespace BlogFoodApi.Service
             var title = postDbRepository.GetTitle(PostID);
             var Food = postDbRepository.GetFood(PostID);
             var Ingredients = new List<string>();
-
-           
-            if (Food != null) {
-                foreach (var item in Food.Ingredients)
-                {
-
-                    Ingredients.Add(item.NameIngredient);
-                }
-            }
+            var Request = new RequestPostViewModel();
+            if (title != null)
             {
-                Ingredients.Add("không có nguyên liệu");
+                if (Food != null)
+                {
+                    foreach (var item in Food.Ingredients)
+                    {
+
+                        Ingredients.Add(item.NameIngredient);
+                    }
+                }
+                {
+                    Ingredients.Add("không có nguyên liệu");
+                }
+
+                var titleViewModel = mapper.Map<Post, TitleViewModel>(title);
+
+                 Request = new RequestPostViewModel
+                {
+                    Title = titleViewModel,
+                    Content = Content.Content,
+                    CookingTime = Food.CookingTime,
+                    Ingredients = Ingredients,
+                    category = title.PostCategories.Category.FoodType
+
+                };
             }
-
-            var titleViewModel = mapper.Map<Post, TitleViewModel>(title);
-         
-            var Request = new RequestPostViewModel { 
-                Title = titleViewModel,
-                Content = Content.Content,
-                CookingTime = Food.CookingTime,
-                Ingredients = Ingredients,
-                category = title.PostCategories.Category.FoodType
-
-            };
 
           
 
